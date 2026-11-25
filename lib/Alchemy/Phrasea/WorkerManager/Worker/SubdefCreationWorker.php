@@ -16,6 +16,7 @@ use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionWritemetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Exception;
+use PhpAmqpLib\Wire\AMQPTable;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Throwable;
@@ -24,6 +25,14 @@ class SubdefCreationWorker implements WorkerInterface
 {
     use ApplicationBoxAware;
     use DataboxLoggerAware;
+
+    // Max number of "delayed" requeues while the record+subdef stays locked before giving up.
+    // The delayed queue TTL is ~5s (AMQPConnection::DEFAULT_DELAYED_DELAY_VALUE), so 720 cycles
+    // is roughly 1h of waiting - large enough never to abandon a record that is merely waiting
+    // for a legitimate concurrent build, small enough to bound what would otherwise be an
+    // infinite loop when a worker killed at a low level (fatal / OOM / SIGKILL) left its
+    // WorkerRunningJob row stuck at status=running and never released the lock.
+    const MAX_DELAYED_RETRY = 720;
 
     private $subdefGenerator;
 
@@ -87,6 +96,36 @@ class SubdefCreationWorker implements WorkerInterface
         $workerRunningJobId = $this->repoWorker->canCreateSubdef($payload);
 
         if (is_null($workerRunningJobId)) {
+            // The record+subdef is locked by another worker. Normally we just delay-requeue and
+            // retry later. But a worker killed at a low level (fatal / OOM / SIGKILL) leaves its
+            // WorkerRunningJob row stuck at status=running and never unlocks it; without a cap this
+            // message would be delay-requeued forever. The delayed queue carries no x-death retry
+            // count, so the MAX_RETRY safety net that protects the failure path never triggers here.
+            // Bound the number of delayed retries: past the cap, give up and park the message in the
+            // failed queue instead of looping. (The stale lock itself is reclaimed separately by the
+            // auto-cancelingJob policy.)
+            $delayedCount = isset($payload['delayedCount']) ? (int) $payload['delayedCount'] : 0;
+
+            if ($delayedCount >= self::MAX_DELAYED_RETRY) {
+                $this->logger->error(sprintf(
+                    "Subdef '%s' for record %d (databox %d) still locked after %d delayed retries, giving up (message parked in failed queue)",
+                    $subdefName, $recordId, $databoxId, $delayedCount
+                ));
+
+                $this->messagePublisher->publishFailedMessage(
+                    [
+                        'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
+                        'payload'      => $payload,
+                    ],
+                    new AMQPTable(['worker-message' => sprintf('locked after %d delayed retries', $delayedCount)]),
+                    MessagePublisher::SUBDEF_CREATION_TYPE
+                );
+
+                return ;
+            }
+
+            $payload['delayedCount'] = $delayedCount + 1;
+
             // the file is written by another worker, delay to retry later
             $this->messagePublisher->publishDelayedMessage(
                 [
@@ -121,13 +160,14 @@ class SubdefCreationWorker implements WorkerInterface
             $this->logger->error($workerMessage);
 
             /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionCreationFailure() */
-            $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
+            $this->dispatcher->dispatch(new SubdefinitionCreationFailureEvent(
                 $record,
                 $subdefName,
                 $workerMessage,
                 $count,
                 $workerRunningJobId
-            ));
+            ),
+            WorkerEvents::SUBDEFINITION_CREATION_FAILURE);
 
             // the subscriber will "unlock" the row, no need to do it here
             return ;
@@ -147,13 +187,14 @@ class SubdefCreationWorker implements WorkerInterface
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionCreationFailure() */
-            $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
+            $this->dispatcher->dispatch(new SubdefinitionCreationFailureEvent(
                 $record,
                 $subdefName,
                 'Subdef generation failed !',
                 $count,
                 $workerRunningJobId
-            ));
+            ),
+            WorkerEvents::SUBDEFINITION_CREATION_FAILURE);
 
             $this->subdefGenerator->setLogger($oldLogger);
 
@@ -166,11 +207,11 @@ class SubdefCreationWorker implements WorkerInterface
         // order to write meta for the subdef if needed
         /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
         $this->dispatcher->dispatch(
-            WorkerEvents::SUBDEFINITION_WRITE_META,
             new SubdefinitionWritemetaEvent(
                 $record,
                 $subdefName
-            )
+            ),
+            WorkerEvents::SUBDEFINITION_WRITE_META
         );
 
         $this->subdefGenerator->setLogger($oldLogger);
@@ -187,7 +228,7 @@ class SubdefCreationWorker implements WorkerInterface
                 if (self::checkIfFirstChild($story, $record)) {
                     $data = implode('_', [$databoxId, $story->getRecordId(), $recordId, $payload['subdefName']]);
 
-                    $this->dispatcher->dispatch(WorkerEvents::STORY_CREATE_COVER, new StoryCreateCoverEvent($data));
+                    $this->dispatcher->dispatch(new StoryCreateCoverEvent($data), WorkerEvents::STORY_CREATE_COVER);
                 }
             }
         }
@@ -210,17 +251,13 @@ class SubdefCreationWorker implements WorkerInterface
 
         $connection = $record->getDatabox()->get_connection();
 
-        $stmt = $connection->prepare($sql);
-
-        $stmt->execute([
+        $stmt = $connection->executeQuery($sql, [
             ':parent_record_id' => $story->getRecordId(),
             ':children_id'      => $record->getRecordId(),
             ':ord'              => 0,
         ]);
 
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-        $stmt->closeCursor();
+        $row = $stmt->fetchAssociative();
 
         if ($row) {
             return true;
@@ -241,12 +278,11 @@ class SubdefCreationWorker implements WorkerInterface
 
         $stmt = $connection->prepare($sql);
 
-        $stmt->execute([
+        $stmt->executeStatement([
             ':record_id'    => $record->getRecordId(),
             ':token'        => PhraseaTokens::MAKE_SUBDEF,
         ]);
 
         $connection->commit();
-        $stmt->closeCursor();
     }
 }

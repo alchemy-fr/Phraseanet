@@ -243,8 +243,8 @@ class SubtitleWorker implements WorkerInterface
             $record->set_metadatas($metadatas);
 
             // order to write meta in file
-            $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+            $this->dispatcher->dispatch(new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()),
+                WorkerEvents::RECORDS_WRITE_META);
 
             $this->getEventsManager()->notify(
                 $payload['authenticatedUserId'],

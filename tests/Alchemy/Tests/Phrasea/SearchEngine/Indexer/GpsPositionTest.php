@@ -4,12 +4,10 @@ namespace Alchemy\Tests\Phrasea\SearchEngine\Indexer;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\GpsPosition;
 
-/**
- * @group unit
- * @group searchengine
- * @group indexer
- */
-class GpsPositionTest extends \PHPUnit_Framework_TestCase
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('searchengine')]
+#[\PHPUnit\Framework\Attributes\Group('indexer')]
+class GpsPositionTest extends \PHPUnit\Framework\TestCase
 {
     // 48.856578_N_2.351828_E
 
@@ -45,15 +43,13 @@ class GpsPositionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($position->isCompleteComposite());
     }
 
-    /**
-     * @dataProvider getSupportedTagNames
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getSupportedTagNames')]
     public function testSupportedTagNames($tag_name)
     {
         $this->assertTrue(GpsPosition::isSupportedTagName($tag_name));
     }
 
-    public function getSupportedTagNames()
+    public static function getSupportedTagNames()
     {
         return [
             ['Longitude'],
@@ -67,15 +63,13 @@ class GpsPositionTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @dataProvider getUnsupportedTagNames
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getUnsupportedTagNames')]
     public function testUnsupportedTagNames($tag_name)
     {
         $this->assertFalse(GpsPosition::isSupportedTagName($tag_name));
     }
 
-    public function getUnsupportedTagNames()
+    public static function getUnsupportedTagNames()
     {
         return [
             ['foo'],

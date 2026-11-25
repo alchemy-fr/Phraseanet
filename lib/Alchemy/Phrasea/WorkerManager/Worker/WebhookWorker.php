@@ -159,10 +159,11 @@ class WebhookWorker implements WorkerInterface
             $this->messagePublisher->pushLog($workerMessage);
 
             // count = 0  mean do not retry because no api application defined
-            $this->dispatch(WorkerEvents::WEBHOOK_DELIVER_FAILURE, new WebhookDeliverFailureEvent(
+            $this->dispatch(new WebhookDeliverFailureEvent(
                 $webhookevent->getId(),
                 $workerMessage,
-                0)
+                0),
+            WorkerEvents::WEBHOOK_DELIVER_FAILURE
             );
 
             return;
@@ -303,12 +304,13 @@ class WebhookWorker implements WorkerInterface
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             // return in the retry_Q
-            $this->dispatch(WorkerEvents::WEBHOOK_DELIVER_FAILURE, new WebhookDeliverFailureEvent(
+            $this->dispatch(new WebhookDeliverFailureEvent(
                 $webhookEventId,
                 $logEntry,
                 $count,
                 $index  // the delivery_id
-            ));
+            ),
+            WorkerEvents::WEBHOOK_DELIVER_FAILURE);
 
             // if it's failed after some retry, save the failure information in the WebhookEventPayloads table
             if ($count > $app['alchemy_worker.amqp.connection']->getSetting(MessagePublisher::WEBHOOK_TYPE, AMQPConnection::MAX_RETRY)) {

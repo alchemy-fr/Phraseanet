@@ -163,6 +163,9 @@ class QueryController extends Controller
                 try {
                     // local code to find "FULLTEXT" value from jsonQuery
                     $findFulltext = function($clause) use(&$findFulltext) {
+                        if (!is_array($clause)) {
+                            return null;
+                        }
                         if(array_key_exists('_ux_zone', $clause) && $clause['_ux_zone']=='FULLTEXT') {
                             return $clause['value'];
                         }
@@ -314,7 +317,7 @@ class QueryController extends Controller
                         </tfoot>
                     </table></div></div>'
                 . '</div><a href="#" class="search-display-info" data-infos="' . str_replace('"', '&quot;', $explain) . '">'
-                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.number_format($result->getTotal(),null, null, ' ').'</span>']) . '</a>';
+                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.number_format($result->getTotal(), 0, null, ' ').'</span>']) . '</a>';
 
             $json['infos'] = $infoResult;
             $json['navigationTpl'] = $string;

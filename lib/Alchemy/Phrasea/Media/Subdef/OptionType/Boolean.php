@@ -31,7 +31,7 @@ class Boolean implements OptionType
 
     public function setValue($value)
     {
-        $this->value = (boolean) $value;
+        $this->value = (bool) $value;
 
         return $this;
     }

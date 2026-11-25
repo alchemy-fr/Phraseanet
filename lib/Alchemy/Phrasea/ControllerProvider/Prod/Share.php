@@ -15,27 +15,23 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Prod\ShareController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\LazyLocator;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class Share implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.prod.share'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.prod.share'] = function (PhraseaApplication $app) {
             return (new ShareController($app))
                 ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
                 ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     public function connect(Application $app)

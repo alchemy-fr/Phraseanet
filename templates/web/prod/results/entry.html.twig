@@ -55,7 +55,7 @@
         {% endif %}
     </div>
 
-    <p>{{ entry.getSubtitle()|nl2br|raw }}</p>
+    <p>{{ entry.getSubtitle()|e|nl2br }}</p>
 
     <div class="contents selectable">
         {% for item in entry.items %}

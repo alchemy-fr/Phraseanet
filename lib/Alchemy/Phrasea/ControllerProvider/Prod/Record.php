@@ -15,27 +15,23 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Prod\RecordController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\LazyLocator;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class Record implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.prod.records'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.prod.records'] = function (PhraseaApplication $app) {
             return (new RecordController($app))
                 ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
                 ->setSearchEngineLocator(new LazyLocator($app, 'phraseanet.SE'))
             ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     /**

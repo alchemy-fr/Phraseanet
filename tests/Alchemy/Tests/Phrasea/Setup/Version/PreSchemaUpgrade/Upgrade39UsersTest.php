@@ -5,35 +5,26 @@ namespace Alchemy\Tests\Phrasea\Setup\Version;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Setup\Version\PreSchemaUpgrade\Upgrade39Users;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Migrations\Configuration\YamlConfiguration;
+use Alchemy\Phrasea\Setup\DoctrineMigrations\MigrationRunner;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\DBAL\Types\Type;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Upgrade39UsersTest extends \PhraseanetTestCase
 {
     const DB_NAME = 'update39_test';
 
-    /**
-     * @dataProvider provideVariousFixtures
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideVariousFixtures')]
     public function testApply($fixture)
     {
         $em = $this->loadFixture($fixture);
 
         $upgrader = new Upgrade39Users();
-        $configuration = new YamlConfiguration($em->getConnection());
-
-        $configuration->load(__DIR__.'/../../../../../../../lib/conf.d/migrations.yml');
-        $configuration->setMigrationsDirectory(__DIR__.'/../../../../../../../lib/Alchemy/Phrasea/Setup/DoctrineMigration');
-
-        $upgrader->apply($em, $this->createAppboxMock(), $configuration);
+        $upgrader->apply($em, $this->createAppboxMock(), MigrationRunner::fromEntityManager($em));
 
         $this->assertUsrTableIsSanitized($em);
         // check usr_ids are preserved
@@ -77,7 +68,7 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
      */
     private function loadUser(EntityManager $em, $id)
     {
-        return $em->find('Phraseanet:User', $id);
+        return $em->find('Alchemy\Phrasea\Model\Entities\User', $id);
     }
 
     private function checkThatNewConstraintsCanBeApplied(EntityManager $em)
@@ -120,7 +111,7 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
         $this->assertEquals($total, $expected - 2);
     }
 
-    public function provideVariousFixtures()
+    public static function provideVariousFixtures()
     {
         return [
             ['tests/fixtures/update39_fixtureFrom38.sql'],
@@ -133,7 +124,7 @@ class Upgrade39UsersTest extends \PhraseanetTestCase
         $em = $this->createEntityManager(null);
         try {
             $em->getConnection()->executeQuery('DROP database '.self::DB_NAME);
-        } catch (DBALException $e) {
+        } catch (\Doctrine\DBAL\Exception $e) {
 
         }
 

@@ -23,7 +23,7 @@ class LogoutSubscriber implements EventSubscriberInterface
         $app['phraseanet.SE']->clearCache();
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::LOGOUT => 'onLogout',

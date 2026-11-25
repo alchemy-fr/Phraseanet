@@ -4,43 +4,32 @@ namespace Alchemy\Tests\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class OldPasswordEncoderTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider providePasswords
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder::encodePassword
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testEncodePassword($pass, $salt, $encoded)
     {
         $encoder = new OldPasswordEncoder();
-        $this->assertEquals($encoded, $encoder->encodePassword($pass, $salt));
+        $this->assertEquals($encoded, $encoder->hash($pass, $salt));
     }
 
-    /**
-     * @dataProvider providePasswords
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder::isPasswordValid
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testIsPasswordValid($pass, $salt, $encoded)
     {
         $encoder = new OldPasswordEncoder();
-        $this->assertTrue($encoder->isPasswordValid($encoded, $pass, $salt));
+        $this->assertTrue($encoder->verify($encoded, $pass, $salt));
     }
 
-    /**
-     * @dataProvider providePasswords
-     * @covers Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder::isPasswordValid
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providePasswords')]
     public function testPasswordNotValid($pass, $salt, $encoded)
     {
         $encoder = new OldPasswordEncoder();
-        $this->assertFalse($encoder->isPasswordValid(mt_rand(), $pass, $salt));
+        $this->assertFalse($encoder->verify(mt_rand(), $pass, $salt));
     }
 
-    public function providePasswords()
+    public static function providePasswords()
     {
         return [
             ['foo', 'bar', '2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'],

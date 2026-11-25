@@ -40,7 +40,7 @@ abstract class AbstractMail implements MailInterface
     /** @var bool  */
     protected $hasFooterText = true;
 
-    public function __construct(Application $app, ReceiverInterface $receiver, EmitterInterface $emitter = null, $message = null)
+    public function __construct(Application $app, ReceiverInterface $receiver, ?EmitterInterface $emitter = null, $message = null)
     {
         $this->app = $app;
         $this->emitter = $emitter;
@@ -154,7 +154,7 @@ abstract class AbstractMail implements MailInterface
     /**
      * {@inheritdoc}
      */
-    public function setEmitter(EmitterInterface $emitter = null)
+    public function setEmitter(?EmitterInterface $emitter = null)
     {
         $this->emitter = $emitter;
 
@@ -233,7 +233,7 @@ abstract class AbstractMail implements MailInterface
      *
      * @return static
      */
-    public static function create(Application $app, ReceiverInterface $receiver, EmitterInterface $emitter = null, $message = null)
+    public static function create(Application $app, ReceiverInterface $receiver, ?EmitterInterface $emitter = null, $message = null)
     {
         return new static($app, $receiver, $emitter, $message);
     }

@@ -61,8 +61,7 @@ class patch_410alpha19a implements patchInterface
         // remove all and last in default query
         $sql = "UPDATE UserSettings SET value = '' WHERE name = 'start_page_query' AND lower(trim(value)) in ('all','last')";
         $stmt = $appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         return true;
     }

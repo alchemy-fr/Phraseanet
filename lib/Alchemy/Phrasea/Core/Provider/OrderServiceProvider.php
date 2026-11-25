@@ -18,9 +18,11 @@ use Alchemy\Phrasea\Order\ValidationNotifier\MailNotifier;
 use Alchemy\Phrasea\Order\ValidationNotifier\WebhookNotifier;
 use Alchemy\Phrasea\Order\ValidationNotifierRegistry;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
+use Silex\Api\BootableProviderInterface;
 
-class OrderServiceProvider implements ServiceProviderInterface
+class OrderServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
 
     /**
@@ -29,9 +31,9 @@ class OrderServiceProvider implements ServiceProviderInterface
      * This method should only be used to configure services and parameters.
      * It should not get services.
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['events.order_subscriber'] = $app->share(function (Application $app) {
+        $app['events.order_subscriber'] = function (Application $app) {
             $notifierRegistry = new ValidationNotifierRegistry();
 
             $notifierRegistry->registerNotifier(Order::NOTIFY_MAIL, new MailNotifier($app));
@@ -40,7 +42,7 @@ class OrderServiceProvider implements ServiceProviderInterface
             ));
 
             return new OrderSubscriber($app, $notifierRegistry);
-        });
+        };
     }
 
     /**

@@ -13,49 +13,32 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="UserSettings",
- *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="unique_setting",columns={"user_id", "name"})
- *      }
- * )
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UserSettingRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\UserSettingRepository::class)]
+#[ORM\Table(name: 'UserSettings')]
+#[ORM\UniqueConstraint(name: 'unique_setting', columns: ['user_id', 'name'])]
 class UserSetting
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="settings")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
-     **/
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'settings')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=64)
-     */
+    #[ORM\Column(type: 'string', length: 64)]
     private $name;
 
-    /**
-     * @ORM\Column(type="text", length=65535)
-     */
+    #[ORM\Column(type: 'text', length: 65535)]
     private $value;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**

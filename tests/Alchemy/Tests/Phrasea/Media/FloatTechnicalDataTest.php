@@ -12,7 +12,7 @@ namespace Alchemy\Tests\Phrasea\Media;
 use Alchemy\Phrasea\Media\FloatTechnicalData;
 use Alchemy\Phrasea\Media\TechnicalData;
 
-final class FloatTechnicalDataTest extends \PHPUnit_Framework_TestCase
+final class FloatTechnicalDataTest extends \PHPUnit\Framework\TestCase
 {
     public function testItImplementsTechnicalData()
     {
@@ -30,6 +30,6 @@ final class FloatTechnicalDataTest extends \PHPUnit_Framework_TestCase
     {
         $sut = new FloatTechnicalData('foo', '3.14159');
 
-        $this->assertEquals(3.14159, $sut->getValue(), '', 0.00001);
+        $this->assertEqualsWithDelta(3.14159, $sut->getValue(), 0.00001);
     }
 }

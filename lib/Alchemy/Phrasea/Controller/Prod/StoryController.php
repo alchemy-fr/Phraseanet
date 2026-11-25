@@ -81,7 +81,7 @@ class StoryController extends Controller
 
         $metadatas = [];
 
-        $titleFields = $request->request->get('name');
+        $titleFields = $request->request->all('name');
 
         foreach ($titleFields as $db_metastructId => $value) {
             $t = explode('-', $db_metastructId);
@@ -167,7 +167,7 @@ class StoryController extends Controller
             $n++;
         }
 
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story, $previousDescription));
+        $this->dispatch(new RecordEdit($Story, $previousDescription), PhraseaEvents::RECORD_EDIT);
 
         $data = [
             'success' => true,
@@ -198,7 +198,7 @@ class StoryController extends Controller
         ];
 
 
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+        $this->dispatch(new RecordEdit($story), PhraseaEvents::RECORD_EDIT);
 
         if ($request->getRequestFormat() == 'json') {
             return $this->app->json($data);
@@ -243,18 +243,16 @@ class StoryController extends Controller
             $sql = 'UPDATE regroup SET ord = :ord WHERE rid_parent = :parent_id AND rid_child = :children_id';
             $stmt = $story->getDatabox()->get_connection()->prepare($sql);
 
-            foreach ($request->request->get('element') as $record_id => $ord) {
+            foreach ($request->request->all('element') as $record_id => $ord) {
                 $params = [
                     ':ord'         => $ord,
                     ':parent_id'   => $story->getRecordId(),
                     ':children_id' => $record_id
                 ];
-                $stmt->execute($params);
+                $stmt->executeStatement($params);
             }
 
-            $stmt->closeCursor();
-
-            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescription));
+            $this->dispatch(new RecordEdit($story, $previousDescription), PhraseaEvents::RECORD_EDIT);
             $ret = ['success' => true, 'message' => $this->app->trans('Story updated')];
         } catch (ControllerException $e) {
             $ret = ['success' => false, 'message' => $e->getMessage()];

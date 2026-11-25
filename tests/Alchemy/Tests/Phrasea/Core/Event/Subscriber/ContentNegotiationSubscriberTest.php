@@ -4,13 +4,11 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\ContentNegotiationSubscriber;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
-class ContentNegotiationSubscriberTest extends \PHPUnit_Framework_TestCase
+class ContentNegotiationSubscriberTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @dataProvider negotiationProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('negotiationProvider')]
     public function testContentNegotiationProvider($negotiationHeader, $expectedContentType)
     {
         $response = $this->request($negotiationHeader, $expectedContentType);
@@ -18,7 +16,7 @@ class ContentNegotiationSubscriberTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContentType, $response->headers->get('content-type'));
     }
 
-    public function negotiationProvider()
+    public static function negotiationProvider()
     {
         return array(
             array('text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'text/html; charset=UTF-8'),
@@ -40,7 +38,7 @@ class ContentNegotiationSubscriberTest extends \PHPUnit_Framework_TestCase
             array(),
             array(),
             array(
-                'HTTP_Accept' => $accept
+                'HTTP_ACCEPT' => $accept
             )
         );
 

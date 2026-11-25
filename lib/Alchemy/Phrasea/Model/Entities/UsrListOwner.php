@@ -14,52 +14,41 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="UsrListOwners", uniqueConstraints={@ORM\UniqueConstraint(name="unique_owner", columns={"user_id", "id"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\UsrListOwnerRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\UsrListOwnerRepository::class)]
+#[ORM\Table(name: 'UsrListOwners')]
+#[ORM\UniqueConstraint(name: 'unique_owner', columns: ['user_id', 'id'])]
 class UsrListOwner
 {
     const ROLE_USER = 1;
     const ROLE_EDITOR = 2;
     const ROLE_ADMIN = 3;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private $role;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="UsrList", inversedBy="owners", cascade={"persist"})
-     * @ORM\JoinColumn(name="list_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: UsrList::class, inversedBy: 'owners', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'list_id', referencedColumnName: 'id')]
     private $list;
 
     /**
@@ -170,7 +159,7 @@ class UsrListOwner
      * @param  UsrList      $list
      * @return UsrListOwner
      */
-    public function setList(UsrList $list = null)
+    public function setList(?UsrList $list = null)
     {
         $this->list = $list;
 

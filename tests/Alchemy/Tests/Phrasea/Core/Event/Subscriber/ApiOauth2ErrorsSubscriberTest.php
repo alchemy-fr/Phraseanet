@@ -4,21 +4,17 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ApiOauth2ErrorsSubscriberTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;
-    /**
-     * @dataProvider provideExceptionsAndCode
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideExceptionsAndCode')]
     public function testError($exception, $code, $contentType)
     {
         $app = new Application(Application::ENV_TEST);
@@ -34,9 +30,7 @@ class ApiOauth2ErrorsSubscriberTest extends \PhraseanetTestCase
         $this->assertEquals($contentType, $client->getResponse()->headers->get('content-type'));
     }
 
-    /**
-     * @dataProvider provideExceptionsAndCode
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideExceptionsAndCode')]
     public function testErrorOnOtherRoutes($exception, $code, $contentType)
     {
         $app = new Application(Application::ENV_TEST);
@@ -47,15 +41,15 @@ class ApiOauth2ErrorsSubscriberTest extends \PhraseanetTestCase
         });
 
         $client = new Client($app);
-        $this->setExpectedException(get_class($exception));
+        $this->expectException(get_class($exception));
         $client->request('GET', '/');
     }
 
-    public function provideExceptionsAndCode()
+    public static function provideExceptionsAndCode()
     {
         return [
-            [new HttpException(512, null, null, ['content-type' => 'application/json']), 512, 'application/json'],
-            [new HttpException(512, null, null), 512, 'text/html; charset=UTF-8'],
+            [new HttpException(512, '', null, ['content-type' => 'application/json']), 512, 'application/json'],
+            [new HttpException(512, '', null), 512, 'text/html; charset=UTF-8'],
             [new \Exception(), 500, 'text/html; charset=UTF-8'],
         ];
     }

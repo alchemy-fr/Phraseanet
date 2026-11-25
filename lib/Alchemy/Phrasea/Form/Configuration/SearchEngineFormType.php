@@ -17,36 +17,35 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SearchEngineFormType extends AbstractType
 {
-    /** @var TranslatorInterface  */
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('min-letters-truncation', IntegerType::class, [
             'label'        => 'Minimum number of letters before truncation',
-            'help_message' => /** @Ignore */ $this->translator->trans('Used in search engine'),
+            'help_message' => /** @Ignore */ $options['translator']->trans('Used in search engine'),
         ]);
         $builder->add('default-query', TextType::class, [
             'label'        => 'Default query',
         ]);
         $builder->add('default-query-type', ChoiceType::class, [
             'label'        => 'Default searched type',
-            'help_message' => /** @Ignore */ $this->translator->trans('Used when opening the application'),
-            'choices'      => ['0' => 'Documents', '1' => 'Stories'],
+            'help_message' => /** @Ignore */ $options['translator']->trans('Used when opening the application'),
+            'choices'      => ['Documents' => 0, 'Stories' => 1],
         ]);
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        return null;
+        $resolver->setRequired('translator');
+        $resolver->setAllowedTypes('translator', TranslatorInterface::class);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return '';
     }
 }

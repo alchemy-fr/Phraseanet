@@ -15,25 +15,22 @@ use Alchemy\Phrasea\Controller\Admin\UserController;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
 
 class Users implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.admin.users'] = $app->share(function () use ($app) {
+        $app['controller.admin.users'] = function () use ($app) {
             return (new UserController($app))
                 ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'))
                 ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'))
             ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 
     public function connect(Application $app)
@@ -54,6 +51,8 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/auth-failure/reset/', 'controller.admin.users:resetAuthFailureAction');
         $controllers->post('/mail-locked/change/', 'controller.admin.users:changeMailLockedAction');
         $controllers->post('/can-renew-password/change/', 'controller.admin.users:changeCanRenewPasswordAction');
+        $controllers->post('/granted-api/change/', 'controller.admin.users:changeGrantedApiAction')
+            ->bind('admin_users_granted_api_change');
         $controllers->post('/rights/apply/', 'controller.admin.users:applyRightsAction')
             ->bind('admin_users_rights_apply');
         $controllers->post('/rights/quotas/', 'controller.admin.users:editQuotasRightsAction');

@@ -59,7 +59,7 @@ class RecordMoverJob extends AbstractJob
         $app = $data->getApplication();
 
         $settings = simplexml_load_string($data->getTask()->getSettings());
-        $logsql = (Boolean) $settings->logsql;
+        $logsql = (bool) $settings->logsql;
         $tasks = array();
         foreach($settings->tasks->task as $task) {
             $tasks[] = $task;
@@ -150,9 +150,8 @@ class RecordMoverJob extends AbstractJob
                 continue;
             }
 
-            $stmt = $databox->get_connection()->prepare($task['sql']['real']['sql']);
-            $stmt->execute();
-            while ($this->isStarted() && false !== $row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $stmt = $databox->get_connection()->executeQuery($task['sql']['real']['sql']);
+            while ($this->isStarted() && false !== $row = $stmt->fetchAssociative()) {
                 $tmp = [
                     'sbas_id'   => $task['sbas_id'],
                     'record_id' => $row['record_id'],
@@ -181,7 +180,6 @@ class RecordMoverJob extends AbstractJob
                         break;
                 }
             }
-            $stmt->closeCursor();
         }
 
         return $ret;
@@ -354,16 +352,15 @@ class RecordMoverJob extends AbstractJob
         $connbas = $databox->get_connection();
         $result = ['rids' => [], 'err' => '', 'n'   => null];
 
-        $result['n'] = $connbas->query('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchColumn();
+        $result['n'] = $connbas->executeQuery('SELECT COUNT(*) AS n FROM (' . $sql . ') AS x')->fetchOne();
 
-        $stmt = $connbas->prepare('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
-        if ($stmt->execute([])) {
-            while (($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
+        try {
+            $stmt = $connbas->executeQuery('SELECT record_id FROM (' . $sql . ') AS x LIMIT 10');
+            while (($row = $stmt->fetchAssociative())) {
                 $result['rids'][] = $row['record_id'];
             }
-            $stmt->closeCursor();
-        } else {
-            $result['err'] = $connbas->errorInfo();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            $result['err'] = $e->getMessage();
         }
 
         return $result;
@@ -476,7 +473,7 @@ class RecordMoverJob extends AbstractJob
         }
 
         // criteria <status mask="XXXXX" />
-        $x = trim($sxtask->from->status['mask']);
+        $x = trim((string) $sxtask->from->status['mask']);
         $x = preg_replace('/[^0-1]/', 'x', $x);
 
         $mx = str_replace(' ', '0', ltrim(str_replace(array('0', 'x'), array(' ', ' '), $x)));

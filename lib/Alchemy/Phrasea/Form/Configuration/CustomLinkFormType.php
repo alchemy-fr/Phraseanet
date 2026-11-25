@@ -20,7 +20,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class CustomLinkFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('linkName', TextType::class, [
             'label' => false,
@@ -36,14 +36,14 @@ class CustomLinkFormType extends AbstractType
                 'required' => true
             ],
             'choices' => [
-                ''    => 'setup::custom-link:select-language',
-                'all' => 'All',
-                'fr'  => 'FR',
-                'en'  => 'EN',
-                'es'  => 'ES',
-                'ar'  => 'AR',
-                'de'  => 'DE',
-                'du'  => 'DU'
+                'setup::custom-link:select-language' => '',
+                'All' => 'all',
+                'FR'  => 'fr',
+                'EN'  => 'en',
+                'ES'  => 'es',
+                'AR'  => 'ar',
+                'DE'  => 'de',
+                'DU'  => 'du'
             ]
         ]);
         $builder->add('linkUrl', UrlType::class, [
@@ -59,9 +59,9 @@ class CustomLinkFormType extends AbstractType
                 'required' => true
             ],
             'choices' => [
-                ''               => 'setup::custom-link:location',
-                'help-menu'      => 'setup::custom-link:help-menu',
-                'navigation-bar' => 'setup::custom-link:navigation-bar',
+                'setup::custom-link:location'       => '',
+                'setup::custom-link:help-menu'      => 'help-menu',
+                'setup::custom-link:navigation-bar' => 'navigation-bar',
             ]
         ]);
         $builder->add('linkOrder', IntegerType::class, [
@@ -73,27 +73,30 @@ class CustomLinkFormType extends AbstractType
         $builder->add('linkColor', ChoiceType::class, [
             'label'   => false,
             'choices' => [
-                ''        => '#ad0800',
-                '#ad0800' => '#ad0800',
-                '#f06006' => '#f06006',
-                '#f5842b' => '#f5842b',
-                '#ffc322' => '#ffc322',
-                '#f4ea5b' => '#f4ea5b',
-                '#b8d84e' => '#b8d84e',
-                '#5aa53b' => '#5aa53b',
-                '#a1d0d0' => '#a1d0d0',
-                '#4497d5' => '#4497d5',
-                '#3567c6' => '#3567c6',
-                '#b151ee' => '#b151ee',
-                '#c875ea' => '#c875ea',
-                '#e46990' => '#e46990',
-                '#ffccd7' => '#ffccd7'
-            ]
+                '',
+                '#ad0800',
+                '#f06006',
+                '#f5842b',
+                '#ffc322',
+                '#f4ea5b',
+                '#b8d84e',
+                '#5aa53b',
+                '#a1d0d0',
+                '#4497d5',
+                '#3567c6',
+                '#b151ee',
+                '#c875ea',
+                '#e46990',
+                '#ffccd7'
+            ],
+            'choice_label' => function ($color) {
+                return '' === $color ? '#ad0800' : $color;
+            },
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 }

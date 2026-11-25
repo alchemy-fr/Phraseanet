@@ -57,13 +57,14 @@ else
   rm -f /usr/local/etc/php/conf.d/newrelic.ini 
 fi
 
-./docker/phraseanet/plugins/console init
+# Best-effort: a plugin init / chown failure must not abort container start (set -e is on).
+./docker/phraseanet/plugins/console init || echo "WARN: plugin init failed, continuing"
 
-chown -R app:app cache
+chown -R app:app cache || true
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on cache/ repository"
 
 if [ -d "plugins/" ];then
-chown -R app:app plugins
+chown -R app:app plugins || true
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown APP:APP on plugins/ repository"
 fi
 

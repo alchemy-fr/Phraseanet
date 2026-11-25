@@ -2,12 +2,12 @@
 
 namespace Alchemy\Phrasea\Command\Feedback\Report;
 
-use Twig_Environment;
-use Twig_Template;
+use Twig\Environment;
+use Twig\Template;
 
 class Action
 {
-    /** @var Twig_Template[] */
+    /** @var Template[] */
     private $template = null;
 
     /**
@@ -15,7 +15,7 @@ class Action
      */
     private $action_conf;
 
-    public function __construct(Twig_Environment $twig, array $action_conf)
+    public function __construct(Environment $twig, array $action_conf)
     {
         $this->action_conf = $action_conf;
         $this->template = $twig->createTemplate($action_conf['value']);

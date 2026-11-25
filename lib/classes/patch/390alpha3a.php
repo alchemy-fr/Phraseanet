@@ -59,15 +59,12 @@ class patch_390alpha3a extends patchAbstract
     {
         $sql = 'DELETE FROM UserQueries';
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $conn = $app->getApplicationBox()->get_connection();
         $sql = 'SELECT * FROM dsel';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql);
+        $rs = $stmt->fetchAllAssociative();
 
         $n = 0;
         $em = $app['orm.em'];

@@ -18,19 +18,13 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class PhraseaAuthenticationForm extends AbstractType
 {
-    private $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('login', TextType::class, [
             'label'       => 'Login',
@@ -50,7 +44,7 @@ class PhraseaAuthenticationForm extends AbstractType
             ],
         ]);
 
-        if ($this->app['phraseanet.configuration']['session']['idle'] < 1) {
+        if ($options['app']['phraseanet.configuration']['session']['idle'] < 1) {
             $builder->add('remember-me', CheckboxType::class, [
                 'label'    =>  'Remember me',
                 'mapped'   => false,
@@ -72,20 +66,21 @@ class PhraseaAuthenticationForm extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix(): string
     {
-        return null;
+        return '';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $csrf = true;
-        if (isset($this->app['phraseanet.configuration']['auth-csrf-protection'])) {
-            $csrf = (Boolean) $this->app['phraseanet.configuration']['auth-csrf-protection'];
-        }
-
+        $resolver->setRequired('app');
+        $resolver->setAllowedTypes('app', Application::class);
         $resolver->setDefaults(array(
-            'csrf_protection' => $csrf,
+            'csrf_protection' => function (Options $options) {
+                $configuration = $options['app']['phraseanet.configuration'];
+
+                return isset($configuration['auth-csrf-protection']) ? (bool) $configuration['auth-csrf-protection'] : true;
+            },
             'allow_extra_fields' => true,
         ));
     }

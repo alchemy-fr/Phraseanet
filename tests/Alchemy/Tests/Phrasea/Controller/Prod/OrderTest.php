@@ -4,16 +4,14 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Notification\Deliverer;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testCreateOrder()
@@ -61,8 +59,8 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
         $this->assertTrue(is_object($content), 'content of response should be a valid JSON object');
-        $this->assertObjectHasAttribute('success', $content, $response->getContent());
-        $this->assertObjectHasAttribute('msg', $content, $response->getContent());
+        $this->assertObjectHasProperty('success', $content, $response->getContent());
+        $this->assertObjectHasProperty('msg', $content, $response->getContent());
         $this->assertTrue($content->success, 'Success attribute of response content should be true');
     }
 
@@ -106,7 +104,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isRedirect(), 'Could not validate some elements. not a redirect');
 
         $url = parse_url($response->headers->get('location'));
-        parse_str($url['query']);
+        parse_str($url['query'], $result);
 
         $this->assertTrue(strpos($url['query'], 'success=1') === 0, 'Validation of elements is not successful');
     }
@@ -136,10 +134,10 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $content = json_decode($response->getContent());
 
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('success', $content, $response->getContent());
+        $this->assertObjectHasProperty('success', $content, $response->getContent());
         $this->assertTrue( ! ! $content->success, $response->getContent());
-        $this->assertObjectHasAttribute('msg', $content, $response->getContent());
-        $this->assertObjectHasAttribute('order_id', $content, $response->getContent());
+        $this->assertObjectHasProperty('msg', $content, $response->getContent());
+        $this->assertObjectHasProperty('order_id', $content, $response->getContent());
     }
 
     public function testDenyOrder()
@@ -192,10 +190,10 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $content = json_decode($response->getContent());
 
         $this->assertTrue(is_object($content));
-        $this->assertObjectHasAttribute('success', $content, $response->getContent());
+        $this->assertObjectHasProperty('success', $content, $response->getContent());
         $this->assertTrue( ! ! $content->success, $response->getContent());
-        $this->assertObjectHasAttribute('msg', $content, $response->getContent());
-        $this->assertObjectHasAttribute('order_id', $content, $response->getContent());
+        $this->assertObjectHasProperty('msg', $content, $response->getContent());
+        $this->assertObjectHasProperty('order_id', $content, $response->getContent());
     }
 
     public function testTodo()
@@ -216,7 +214,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($triggered, 'Order delivered listener not triggered');
 
-        $testOrder = $app['orm.em']->getRepository('Phraseanet:Order')->find($order->getId());
+        $testOrder = $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
 
         $this->assertEquals(0, $testOrder->getTodo());
     }
@@ -242,22 +240,20 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $parameters = [$order->getElements()->first()->getId()];
         $client = $this->getClient();
         $client->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
-        $testOrder = $entityManager->getRepository('Phraseanet:Order')->find($order->getId());
+        $testOrder = $entityManager->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
         $this->assertEquals(1, $testOrder->getTodo());
 
         $parameters = [$orderElement->getId()];
         $client->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
 
-        $testOrder = $entityManager->getRepository('Phraseanet:Order')->find($order->getId());
+        $testOrder = $entityManager->getRepository('Alchemy\Phrasea\Model\Entities\Order')->find($order->getId());
         $this->assertEquals(0, $testOrder->getTodo());
     }
 
     private function createOneOrder($usage)
     {
         $app = $this->getApplication();
-        $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['notification.deliverer'] = $this->createMock('Alchemy\Phrasea\Notification\Deliverer');
 
         $record1 = $this->getRecord1();
 

@@ -35,7 +35,7 @@ class MediaSubdefRepository
      */
     private $hydrator;
 
-    public function __construct(MediaSubdefDataRepository $repository, callable $subdefFactory, Hydrator $hydrator = null)
+    public function __construct(MediaSubdefDataRepository $repository, callable $subdefFactory, ?Hydrator $hydrator = null)
     {
         $this->repository = $repository;
         $this->subdefFactory = $subdefFactory;
@@ -65,7 +65,7 @@ class MediaSubdefRepository
      * @param string[] $names
      * @return \media_subdef[]
      */
-    public function findByRecordIdsAndNames(array $recordIds, array $names = null)
+    public function findByRecordIdsAndNames(array $recordIds, ?array $names = null)
     {
         if (!$recordIds) {
             return [];

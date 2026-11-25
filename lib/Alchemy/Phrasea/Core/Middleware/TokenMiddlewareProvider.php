@@ -11,22 +11,19 @@
 
 namespace Alchemy\Phrasea\Core\Middleware;
 
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class TokenMiddlewareProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['middleware.token.converter'] = $app->protect(function (Request $request, Application $app) {
             if ($request->attributes->has('token')) {
                 $request->attributes->set('token', $app['converter.token']->convert($request->attributes->get('token')));
             }
         });
-    }
-
-    public function boot(Application $app)
-    {
     }
 }

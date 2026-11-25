@@ -3,22 +3,19 @@ upstream backend {
 }
 server {
     listen       8080;
-    root         /var/www/simplesamlphp-1.10.0/www;
+    root         /var/www/simplesamlphp/public;
 
     index        index.php;
 
-    location  /simplesaml {
-        alias /var/www/simplesamlphp-1.10.0/www;
+    location ^~ /simplesaml {
+        alias /var/www/simplesamlphp/public;
 
-        location ~ \.php(/|$) {
+        location ~ ^(?<prefix>/simplesaml)(?<phpfile>.+?\.php)(?<pathinfo>/.*)?$ {
             include fastcgi_params;
             fastcgi_pass   backend;
-            fastcgi_split_path_info ^(.+?\.php)(/.+)$;
-            fastcgi_param SCRIPT_FILENAME $request_filename;
-            fastcgi_param PATH_INFO       $fastcgi_path_info if_not_empty;
-            proxy_set_header X-Forwarded-Port $server_port;
-            fastcgi_param PATH_INFO $fastcgi_path_info;
+            fastcgi_param SCRIPT_FILENAME $document_root$phpfile;
+            fastcgi_param SCRIPT_NAME /simplesaml$phpfile;
+            fastcgi_param PATH_INFO $pathinfo if_not_empty;
         }
     }
 }
-

@@ -86,10 +86,8 @@ class Bridge_Account
         $sql = 'SELECT id, dist_id, usr_id, name, created_on, updated_on
             FROM bridge_accounts WHERE id = :id';
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':id' => $this->id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $this->app->getApplicationBox()->get_connection()->executeQuery($sql, [':id' => $this->id]);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             throw new Bridge_Exception_AccountNotFound('Account Not Found');
@@ -198,8 +196,7 @@ class Bridge_Account
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         return $this;
     }
@@ -220,8 +217,7 @@ class Bridge_Account
         $sql = 'DELETE FROM bridge_accounts WHERE id = :id';
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':id' => $this->id]);
-        $stmt->closeCursor();
+        $stmt->executeStatement([':id' => $this->id]);
 
         return;
     }
@@ -236,10 +232,8 @@ class Bridge_Account
     {
         $sql = 'SELECT id, api_id FROM bridge_accounts WHERE id = :account_id';
 
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':account_id' => $account_id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql, [':account_id' => $account_id]);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             throw new Bridge_Exception_AccountNotFound('Account Not Found');
@@ -269,10 +263,8 @@ class Bridge_Account
             , ':dist_id' => $distant_id
         ];
 
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql, $params);
+        $row = $stmt->fetchAssociative();
 
         if ( ! $row)
             throw new Bridge_Exception_AccountNotFound();
@@ -292,10 +284,8 @@ class Bridge_Account
         $sql = 'SELECT id FROM bridge_accounts WHERE api_id = :api_id
             LIMIT 0,' . (int) $quantity;
 
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':api_id' => $api->get_id()]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql, [':api_id' => $api->get_id()]);
+        $rs = $stmt->fetchAllAssociative();
 
         $results = [];
 
@@ -316,10 +306,8 @@ class Bridge_Account
     {
         $sql = 'SELECT id, api_id FROM bridge_accounts WHERE usr_id = :usr_id';
 
-        $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $user->getId()]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $app->getApplicationBox()->get_connection()->executeQuery($sql, [':usr_id' => $user->getId()]);
+        $rs = $stmt->fetchAllAssociative();
 
         $results = [];
         $apis = [];
@@ -364,8 +352,7 @@ class Bridge_Account
 
         $connection = $app->getApplicationBox()->get_connection();
         $stmt = $connection->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
+        $stmt->executeStatement($params);
 
         $account_id = $connection->lastInsertId();
 

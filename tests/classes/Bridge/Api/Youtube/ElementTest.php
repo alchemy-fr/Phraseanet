@@ -2,10 +2,8 @@
 
 require_once __DIR__ . '/../../Bridge_datas.inc';
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Bridge_Api_Youtube_ElementTest extends \PhraseanetTestCase
 {
     /**
@@ -13,7 +11,7 @@ class Bridge_Api_Youtube_ElementTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $published = new Zend_Gdata_App_Extension_Published("2011-10-21 12:00:00");
@@ -49,31 +47,31 @@ class Bridge_Api_Youtube_ElementTest extends \PhraseanetTestCase
     public function testGet_id()
     {
         $this->assertEquals("Az2cv12", $this->object->get_id());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_id());
+        $this->assertIsString($this->object->get_id());
     }
 
     public function testGet_thumbnail()
     {
         $this->assertEquals("une url", $this->object->get_thumbnail());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_thumbnail());
+        $this->assertIsString($this->object->get_thumbnail());
     }
 
     public function testGet_url()
     {
         $this->assertEquals("coucou", $this->object->get_url());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_url());
+        $this->assertIsString($this->object->get_url());
     }
 
     public function testGet_title()
     {
         $this->assertEquals("hellow", $this->object->get_title());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_title());
+        $this->assertIsString($this->object->get_title());
     }
 
     public function testGet_description()
     {
         $this->assertEquals("one description", $this->object->get_description());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_description());
+        $this->assertIsString($this->object->get_description());
     }
 
     public function testGet_updated_on()
@@ -85,25 +83,25 @@ class Bridge_Api_Youtube_ElementTest extends \PhraseanetTestCase
     public function testGet_category()
     {
         $this->assertEquals("category", $this->object->get_category());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_category());
+        $this->assertIsString($this->object->get_category());
     }
 
     public function testGet_duration()
     {
         $this->assertEquals(p4string::format_seconds(80), $this->object->get_duration());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_duration());
+        $this->assertIsString($this->object->get_duration());
     }
 
     public function testGet_view_count()
     {
         $this->assertEquals(5, $this->object->get_view_count());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_INT, $this->object->get_view_count());
+        $this->assertIsInt($this->object->get_view_count());
     }
 
     public function testGet_rating()
     {
         $this->assertEquals(200, $this->object->get_rating());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_INT, $this->object->get_rating());
+        $this->assertIsInt($this->object->get_rating());
     }
 
     public function testGet_created_on()
@@ -114,13 +112,13 @@ class Bridge_Api_Youtube_ElementTest extends \PhraseanetTestCase
 
     public function testIs_private()
     {
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_BOOL, $this->object->is_private());
+        $this->assertIsBool($this->object->is_private());
         $this->assertTrue($this->object->is_private());
     }
 
     public function testGet_type()
     {
         $this->assertEquals("video", $this->object->get_type());
-        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $this->object->get_type());
+        $this->assertIsString($this->object->get_type());
     }
 }

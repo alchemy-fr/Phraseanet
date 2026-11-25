@@ -19,6 +19,8 @@ class patch_380alpha9a extends patchAbstract
     /** @var array */
     private $concern = [base::DATA_BOX];
 
+    private $status = [];
+
     /**
      * {@inheritdoc}
      */

@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Plugin\Management;
 
 use Alchemy\Phrasea\Plugin\Exception\ComposerInstallException;
 use Alchemy\Phrasea\Utilities\ComposerSetup;
-use Symfony\Component\Process\ProcessBuilder;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ExceptionInterface as ProcessException;
 
 class ComposerInstaller
@@ -40,14 +40,14 @@ class ComposerInstaller
 
     public function install($directory)
     {
-        $process = $this->createProcessBuilder()
-            ->setTimeout(null)
-            ->add('install')
-            ->add('--working-dir')
-            ->add($directory)
-            ->add('--no-dev')
-            ->add('--optimize-autoloader')
-            ->getProcess();
+        $process = new Process(array_merge($this->getComposerCommand(), [
+            'install',
+            '--working-dir',
+            $directory,
+            '--no-dev',
+            '--optimize-autoloader',
+        ]));
+        $process->setTimeout(null);
 
         try {
             $process->run();
@@ -61,9 +61,9 @@ class ComposerInstaller
     }
 
     /**
-     * @return ProcessBuilder
+     * @return string[]
      */
-    private function createProcessBuilder()
+    private function getComposerCommand()
     {
         if (!file_exists($this->composer)) {
             try {
@@ -72,12 +72,10 @@ class ComposerInstaller
                 throw new ComposerInstallException('Unable to install composer.', $e->getCode(), $e);
             }
         } else {
-            $process = ProcessBuilder::create([
-                $this->phpExecutable, $this->composer, 'self-update'
-            ])->getProcess();
+            $process = new Process([$this->phpExecutable, $this->composer, 'self-update']);
             $process->run();
         }
 
-        return ProcessBuilder::create([$this->phpExecutable, $this->composer]);
+        return [$this->phpExecutable, $this->composer];
     }
 }

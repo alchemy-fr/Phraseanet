@@ -39,7 +39,7 @@ class WebhookSubscriber implements EventSubscriberInterface
 
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             WorkerEvents::WEBHOOK_DELIVER_FAILURE => 'onWebhookDeliverFailure',

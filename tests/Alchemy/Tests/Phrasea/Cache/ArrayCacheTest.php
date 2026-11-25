@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Cache;
 
 use Alchemy\Phrasea\Cache\ArrayCache;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ArrayCacheTest extends \PhraseanetTestCase
 {
     /**
@@ -15,7 +13,7 @@ class ArrayCacheTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new ArrayCache;

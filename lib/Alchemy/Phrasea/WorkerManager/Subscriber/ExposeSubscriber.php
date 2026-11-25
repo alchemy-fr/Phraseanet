@@ -40,7 +40,7 @@ class ExposeSubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             WorkerEvents::EXPOSE_UPLOAD_ASSETS  => 'onExposeUploadAssets',

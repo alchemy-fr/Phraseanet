@@ -2,13 +2,13 @@
 
 namespace Alchemy\Phrasea\Command\Feedback\Report;
 
-use Twig_Environment;
+use Twig\Environment;
 
 class StatusBitAction extends Action implements ActionInterface
 {
     private $bit;
 
-    public function __construct(Twig_Environment $twig, array $action_conf)
+    public function __construct(Environment $twig, array $action_conf)
     {
         parent::__construct($twig, $action_conf);
         $bit = (int)($sbit = trim($action_conf['status_bit']));

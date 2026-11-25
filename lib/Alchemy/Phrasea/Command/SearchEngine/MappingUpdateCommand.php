@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MappingUpdateCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('searchengine:mapping:update')

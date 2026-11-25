@@ -3,29 +3,21 @@
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Core\Configuration\RegistryManipulator;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class SetupTest extends \PhraseanetAuthenticatedWebTestCase
 {
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Setup::getGlobals
-     */
     public function testGetSlash()
     {
         self::$DI['client']->request('GET', '/admin/setup/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Setup::getGlobals
-     */
     public function testGetSlashUnauthorizedException()
     {
         $this->setAdmin(false);
@@ -35,17 +27,12 @@ class SetupTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertForbiddenResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Setup::postGlobals
-     */
     public function testPostGlobals()
     {
         $database =  self::$DI['app']['conf']->get(['main', 'database']);
-        $registry = $this->getMockBuilder('Alchemy\Phrasea\Core\Configuration\PropertyAccess')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $registry = $this->createMock('Alchemy\Phrasea\Core\Configuration\PropertyAccess');
 
-        $registry->expects($this->any())
+        $registry
             ->method('get')
             ->will($this->returnCallback(function ($prop, $default = null) use ($database) {
                 if ($prop === ['main', 'database']) {

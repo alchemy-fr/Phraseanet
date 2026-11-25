@@ -138,7 +138,7 @@ class RegistrationSubscriber extends AbstractNotificationSubscriber
         return true;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PhraseaEvents::REGISTRATION_AUTOREGISTER => 'onAutoRegistration',

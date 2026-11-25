@@ -14,7 +14,7 @@ class AbstractMailWithLinkTest extends AbstractMailTest
         $mail = new AbstractTesterWithLink($this->getApplicationMock(), $this->getReceiverMock());
         $this->assertNull($mail->getExpiration());
 
-        $expiration = $this->getMock('\DateTime');
+        $expiration = $this->createStub('\DateTime');
 
         $mail->setExpiration($expiration);
         $this->assertEquals($expiration, $mail->getExpiration());

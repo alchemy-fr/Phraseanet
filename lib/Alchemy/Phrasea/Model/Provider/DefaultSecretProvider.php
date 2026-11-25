@@ -52,12 +52,12 @@ class DefaultSecretProvider implements SecretProvider, \ArrayAccess
         return $secret;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return null !== $this->repository->find($offset);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         $secret = $this->repository->find($offset);
         if (!$secret instanceof Secret) {
@@ -67,12 +67,12 @@ class DefaultSecretProvider implements SecretProvider, \ArrayAccess
         return $secret->getToken();
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new \LogicException('This ArrayAccess is non mutable.');
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         throw new \LogicException('This ArrayAccess is non mutable.');
     }

@@ -21,7 +21,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class QueryParseCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('searchengine:query:parse')

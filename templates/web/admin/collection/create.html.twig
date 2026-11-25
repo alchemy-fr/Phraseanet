@@ -2,13 +2,13 @@
     <h1>{{ 'admin::base:collection: Creer une collection' | trans }}</h1>
 </div>
 
-{% if app['request'].get('error') == 'name' %}
+{% if app['request_stack'].currentRequest.get('error') == 'name' %}
         <div class="alert alert-error">
             <a class="close" data-dismiss="alert" href="#">×</a>
             {{ 'admin:: La collection n\'a pas ete creee : vous devez donner un nom a votre collection' | trans }}
         </div>
 
-{% elseif app['request'].get('error') == 'error' %}
+{% elseif app['request_stack'].currentRequest.get('error') == 'error' %}
         <div class="alert alert-error">
             <a class="close" data-dismiss="alert" href="#">×</a>
             {{ 'An error occured, please retry or contact an admin if problem persist' | trans }}
@@ -16,7 +16,7 @@
 {% endif %}
 
 <div class="well-small">
-    <form class="form-horizontal" method='post' action='{{ path('admin_database_submit_collection', {'databox_id': app['request'].get('databox_id')}) }}'>
+    <form class="form-horizontal" method='post' action='{{ path('admin_database_submit_collection', {'databox_id': app['request_stack'].currentRequest.get('databox_id')}) }}'>
         <fieldset>
             <div class="control-group">
                 <label class="control-label" for="cnm">{{ 'admin::base:collection: Nom de la nouvelle collection :' | trans }}</label>
@@ -49,7 +49,7 @@
             </div>
             <div class="form-actions">
                 <button class="btn btn-primary" type="submit">{{ 'boutton::valider' | trans }}</button>
-                <a href='{{ path('admin_database', {'databox_id': app['request'].get('databox_id')}) }}' target='right' class="btn ajax">{{ 'boutton::annuler' | trans }}</a>
+                <a href='{{ path('admin_database', {'databox_id': app['request_stack'].currentRequest.get('databox_id')}) }}' target='right' class="btn ajax">{{ 'boutton::annuler' | trans }}</a>
             </div>
         </fieldset>
     </form>

@@ -30,7 +30,7 @@ class StringUtils
     {
     }
 
-    public static function setSlugify(SlugifyInterface $slugify = null)
+    public static function setSlugify(?SlugifyInterface $slugify = null)
     {
         self::$slugifier = $slugify;
     }

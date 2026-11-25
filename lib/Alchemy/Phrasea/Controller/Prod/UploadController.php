@@ -43,18 +43,6 @@ class UploadController extends Controller
     use FilesystemAware;
     use SubDefinitionSubstituerAware;
 
-    public function getFlashUploadForm()
-    {
-        $maxFileSize = $this->getUploadMaxFileSize();
-
-        return $this->render('prod/upload/upload-flash.html.twig', [
-            'sessionId'           => session_id(),
-            'collections'         => $this->getGrantedCollections($this->getAclForUser()),
-            'maxFileSize'         => $maxFileSize,
-            'maxFileSizeReadable' => \p4string::format_octets($maxFileSize)
-        ]);
-    }
-
     public function getHtml5UploadForm()
     {
         $this->setSessionFormToken('prodUpload');
@@ -219,7 +207,7 @@ class UploadController extends Controller
 
             $packageFile = new File($this->app, $media, $collection, $originalName);
 
-            $postStatus = $request->request->get('status');
+            $postStatus = $request->request->all('status');
 
             if (isset($postStatus[$collection->get_base_id()]) && is_array($postStatus[$collection->get_base_id()])) {
                 $postStatus = $postStatus[$collection->get_base_id()];
@@ -232,6 +220,10 @@ class UploadController extends Controller
             }
 
             $forceBehavior = $request->request->get('forceAction');
+            // the Border manager expects one of its FORCE_* booleans, forms post them as strings
+            if (null !== $forceBehavior && !is_bool($forceBehavior)) {
+                $forceBehavior = '' === $forceBehavior ? null : filter_var($forceBehavior, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            }
 
             $reasons = [];
             $elementCreated = null;
@@ -261,7 +253,7 @@ class UploadController extends Controller
                 $element = 'record';
                 $message = $this->app->trans('The record was successfully created');
 
-                $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
+                $this->dispatch(new RecordEdit($elementCreated), PhraseaEvents::RECORD_UPLOAD);
 
                 // try to create thumbnail from data URI
                 if ('' !== $b64Image = $request->request->get('b64_image', '')) {
@@ -285,7 +277,7 @@ class UploadController extends Controller
                 }
             } else {
                 /** @var LazaretFile $elementCreated */
-                $this->dispatch(PhraseaEvents::LAZARET_CREATE, new LazaretEvent($elementCreated));
+                $this->dispatch(new LazaretEvent($elementCreated), PhraseaEvents::LAZARET_CREATE);
 
                 $id = $elementCreated->getId();
                 $element = 'lazaret';

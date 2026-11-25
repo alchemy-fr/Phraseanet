@@ -13,10 +13,10 @@ class CustomCommand extends Command
         parent::__construct('hello:world');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->write('Hello World');
 
-        return 0;
+        return \Symfony\Component\Console\Command\Command::SUCCESS;
     }
 }

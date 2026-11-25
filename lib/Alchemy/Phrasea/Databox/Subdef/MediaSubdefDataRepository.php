@@ -17,7 +17,7 @@ interface MediaSubdefDataRepository
      * @param string[]|null $names null means to look for all available names
      * @return array[]
      */
-    public function findByRecordIdsAndNames(array $recordIds, array $names = null);
+    public function findByRecordIdsAndNames(array $recordIds, ?array $names = null);
 
     /**
      * @param array[] $subdefIds (should be a list of associative arrays with record_id and name keys)

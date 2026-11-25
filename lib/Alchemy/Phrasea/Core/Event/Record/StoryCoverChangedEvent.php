@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core\Event\Record;
 
 use record_adapter;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class StoryCoverChangedEvent extends Event
 {

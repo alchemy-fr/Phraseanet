@@ -11,19 +11,15 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class UnicodeServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['unicode'] = $app->share(function ($app) {
+        $app['unicode'] = function ($app) {
             return new \unicode();
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

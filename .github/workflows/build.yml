@@ -53,9 +53,10 @@ jobs:
       - uses: docker/setup-buildx-action@v4
 
       - name: Get tag name
-        if: github.event_name != 'pull_request'
         shell: bash
-        run: echo "PHRASEANET_DOCKER_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+        run: |
+          TAG="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          echo "PHRASEANET_DOCKER_TAG=${TAG//\//-}" >> $GITHUB_ENV
 
       - name: build ${{ inputs.image }}
         env:

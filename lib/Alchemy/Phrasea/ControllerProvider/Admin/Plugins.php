@@ -12,23 +12,19 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\PluginsController;
 use Alchemy\Phrasea\Security\Firewall;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class Plugins implements ControllerProviderInterface, ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.admin_plugin'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.admin_plugin'] = function (PhraseaApplication $app) {
             return new PluginsController($app);
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // Nothing to do
+        };
     }
 
     public function connect(Application $app)

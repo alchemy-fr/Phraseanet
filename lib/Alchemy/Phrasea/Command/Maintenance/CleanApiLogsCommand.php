@@ -66,10 +66,8 @@ class CleanApiLogsCommand extends Command
             $output->writeln(sprintf("sql: \"<info>%s</info>\"", $sql_delete));
         }
 
-        $stmt = $this->container->getApplicationBox()->get_connection()->prepare($sql_count);
-        $stmt->execute();
-        $n = $stmt->fetchColumn(0);
-        $stmt->closeCursor();
+        $stmt = $this->container->getApplicationBox()->get_connection()->executeQuery($sql_count);
+        $n = $stmt->fetchOne();
 
         $output->writeln(sprintf("%d ApiLogs will be deleted.", $n));
 
@@ -79,7 +77,7 @@ class CleanApiLogsCommand extends Command
             // group delete by 1000
             $sql_delete =  $sql_delete . ' LIMIT 1000';
             do {
-                $nbDeletedRow = $cnx->exec($sql_delete);
+                $nbDeletedRow = $cnx->executeStatement($sql_delete);
                 $count += $nbDeletedRow;
             } while ($nbDeletedRow > 0);
 

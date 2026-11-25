@@ -4,26 +4,22 @@ namespace Alchemy\Tests\Phrasea\Http\H264PseudoStream;
 
 use Alchemy\Phrasea\Http\H264PseudoStreaming\Apache;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ApacheTest extends \PhraseanetTestCase
 {
-    /**
-     * @dataProvider provideMappingsAndFiles
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideMappingsAndFiles')]
     public function testGetUrl(array $mapping, $expectedRegExp, $pathfile)
     {
         $mode = new Apache($mapping);
         if (null === $expectedRegExp) {
             $this->assertNull($mode->getUrl($pathfile));
         } else {
-            $this->assertRegExp($expectedRegExp, (string) $mode->getUrl($pathfile));
+            $this->assertMatchesRegularExpression($expectedRegExp, (string) $mode->getUrl($pathfile));
         }
     }
 
-    public function provideMappingsAndFiles()
+    public static function provideMappingsAndFiles()
     {
         $dir = sys_get_temp_dir().'/to/subdef';
         $file = $dir . '/to/file';

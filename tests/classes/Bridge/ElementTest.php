@@ -2,10 +2,8 @@
 
 require_once __DIR__ . '/Bridge_datas.inc';
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class Bridge_ElementTest extends \PhraseanetTestCase
 {
     /**
@@ -20,14 +18,13 @@ class Bridge_ElementTest extends \PhraseanetTestCase
     protected $title;
     protected $status;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
         $stmt = self::$DI['app']->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         $this->api = Bridge_Api::create(self::$DI['app'], 'Apitest');
         $this->dist_id = 'EZ1565loPP';
@@ -42,7 +39,7 @@ class Bridge_ElementTest extends \PhraseanetTestCase
         $this->object = new Bridge_Element(self::$DI['app'], $this->account, $this->id);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->object) {
             $this->object->delete();
@@ -155,8 +152,6 @@ class Bridge_ElementTest extends \PhraseanetTestCase
 
         if (null === $reflection) {
             $reflection = new ReflectionProperty(Bridge_Element::class, 'updated_on');
-
-            $reflection->setAccessible(true);
         }
 
         $reflection->setValue($this->object, new DateTime('yesterday'));

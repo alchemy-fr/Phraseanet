@@ -6,13 +6,13 @@ use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Symfony\Component\Process\ExecutableFinder;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PluginServiceProviderTest extends ServiceProviderTestCase
 {
-    public function provideServiceDescription()
+    public static function provideServiceDescription()
     {
         return [
             [

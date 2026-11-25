@@ -1,0 +1,13 @@
+{
+  "name": "phraseanet-ui-smoke",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Browser UI smoke test for Phraseanet (non-regression harness)",
+  "scripts": {
+    "smoke": "node smoke.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.49.1"
+  }
+}

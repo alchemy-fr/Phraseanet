@@ -72,7 +72,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
      * @param string[]|null $names
      * @return array
      */
-    public function findByRecordIdsAndNames(array $recordIds, array $names = null)
+    public function findByRecordIdsAndNames(array $recordIds, ?array $names = null)
     {
         $keys = $this->computeKeys($recordIds, $names);
 
@@ -158,7 +158,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
             return array_map([$this, 'getCacheKey'], array_fill(0, $namesCount, $recordId), $names);
         }, array_unique($recordIds));
 
-        return $keys ? call_user_func_array('array_merge', $keys) : [];
+        return $keys ? array_merge(...array_values($keys)) : [];
     }
 
     /**
@@ -178,7 +178,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
      * @param string[] $keys Known keys supposed to be fetched
      * @return array
      */
-    private function fetchAndSave(array $recordIds, array $names = null, array $keys = [])
+    private function fetchAndSave(array $recordIds, ?array $names = null, array $keys = [])
     {
         $retrieved = $this->decorated->findByRecordIdsAndNames($recordIds, $names);
 
@@ -196,7 +196,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
      * @param string[]|null $names
      * @return string[]
      */
-    private function computeKeys(array $recordIds, array $names = null)
+    private function computeKeys(array $recordIds, ?array $names = null)
     {
         if (!$recordIds) {
             return [];
@@ -207,7 +207,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
         $keys = $this->generateAllCacheKeys($recordIds);
         $data = $this->cache->fetchMultiple($keys);
 
-        return count($keys) === count($data) ? call_user_func_array('array_merge', $data) : [];
+        return count($keys) === count($data) ? array_merge(...array_values($data)) : [];
     }
 
     /**

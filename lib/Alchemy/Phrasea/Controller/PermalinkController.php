@@ -129,8 +129,8 @@ class PermalinkController extends AbstractDelivery
 
         if ($isDownload && $user = $this->app->getAuthenticatedUser()) {
             $this->getEventDispatcher()->dispatch(
-                PhraseaEvents::EXPORT_CREATE,
-                new ExportEvent($user, 0, $sbas_id . '_' . $record_id, [ $subdef ], '')
+                new ExportEvent($user, 0, $sbas_id . '_' . $record_id, [ $subdef ], ''),
+                PhraseaEvents::EXPORT_CREATE
             );
         }
 

@@ -14,26 +14,22 @@ namespace Alchemy\Phrasea\ControllerProvider\Prod;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Prod\PropertyController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ServiceProviderInterface;
 
 class Property implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['controller.prod.property'] = $app->share(function (PhraseaApplication $app) {
+        $app['controller.prod.property'] = function (PhraseaApplication $app) {
             return (new PropertyController($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
             ;
-        });
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        };
     }
 
     /**

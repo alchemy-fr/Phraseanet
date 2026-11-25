@@ -20,15 +20,19 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
     docker-php-ext-enable xdebug
 fi
 
-./docker/phraseanet/plugins/console init
+# Best-effort: never let plugin init abort container start. When several workers start at
+# once they run this concurrently against the same (bind-mounted) plugins volume, and a
+# transient failure must not kill the worker (set -e is on).
+./docker/phraseanet/plugins/console init || echo "WARN: plugin init failed, continuing"
 
 # rm -Rf cache/*
 
-chown -R app:app cache
+# Best-effort chowns: a file vanishing mid-"chown -R" (concurrent workers) must not be fatal.
+chown -R app:app cache || true
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on cache/ repository"
 
 if [ -d "www/plugins/" ];then
-chown -R app:app www/plugins
+chown -R app:app www/plugins || true
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on plugins/ repository"
 fi
 
@@ -38,7 +42,7 @@ fi
 #    www
 
 if [ -d "plugins/" ];then
-chown -R app:app plugins
+chown -R app:app plugins || true
 echo `date +"%Y-%m-%d %H:%M:%S"` " - chown app:app on plugins/ repository"
 fi
 

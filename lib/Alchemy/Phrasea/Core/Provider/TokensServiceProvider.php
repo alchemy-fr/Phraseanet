@@ -11,19 +11,15 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class TokensServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['tokens'] = $app->share(function ($app) {
+        $app['tokens'] = function ($app) {
             return new \random($app);
-        });
-    }
-
-    public function boot(Application $app)
-    {
+        };
     }
 }

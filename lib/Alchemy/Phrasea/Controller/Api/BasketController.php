@@ -42,12 +42,13 @@ class BasketController extends Controller
 
         $result = Result::create($request, ['elements' => $elements]);
 
-        $this->dispatch(PhraseaEvents::BASKET_ELEMENTS_ADDED, new ElementsAdded(
+        $this->dispatch(new ElementsAdded(
             $basket,
             $requestedRecords,
             $elements,
             $errors
-        ));
+        ),
+        PhraseaEvents::BASKET_ELEMENTS_ADDED);
 
         return $result->createResponse();
     }
@@ -64,7 +65,7 @@ class BasketController extends Controller
 
         $result = Result::create($request, ['elements' => $elements]);
 
-        $this->dispatch(PhraseaEvents::BASKET_ELEMENTS_REMOVED, new ElementsRemoved($basket, $requestedRecords, $elements));
+        $this->dispatch(new ElementsRemoved($basket, $requestedRecords, $elements), PhraseaEvents::BASKET_ELEMENTS_REMOVED);
 
         return $result->createResponse();
     }

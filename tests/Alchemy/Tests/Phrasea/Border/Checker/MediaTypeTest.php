@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\MediaType;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MediaTypeTest extends \PhraseanetTestCase
 {
     /**
@@ -16,19 +14,12 @@ class MediaTypeTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
-     * @covers Alchemy\Phrasea\Border\Checker\MediaType::__construct
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new MediaType(self::$DI['app'], ['mediatypes' => [MediaType::TYPE_IMAGE]]);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\MediaType::check
-     */
     public function testCheck()
     {
         $media = self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg');
@@ -46,19 +37,14 @@ class MediaTypeTest extends \PhraseanetTestCase
         $this->assertFalse($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\MediaType::getMessage
-     */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', $this->object->getMessage($this->createTranslatorMock()));
+        $this->assertIsString($this->object->getMessage($this->createTranslatorMock()));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testContructorInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
         new MediaType(self::$DI['app'], [[MediaType::TYPE_IMAGE]]);
     }
 }

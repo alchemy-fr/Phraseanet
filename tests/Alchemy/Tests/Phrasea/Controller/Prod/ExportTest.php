@@ -4,18 +4,18 @@ namespace Alchemy\Tests\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Model\Entities\User;
 
 /**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
  * @todo Test Alchemy\Phrasea\Controller\Prod\Export::exportMail
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class ExportTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
     private static $GV_activeFTP;
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (self::$GV_activeFTP) {
             self::$DI['app']['conf']->set(['registry', 'ftp', 'ftp-enabled'], true);
@@ -25,9 +25,6 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         parent::tearDown();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Export::displayMultiExport
-     */
     public function testDisplayMultiExport()
     {
         self::$DI['client']->request('POST', '/prod/export/multi-export/', ['lst' => self::$DI['record_1']->get_serialize_key()]);
@@ -35,15 +32,11 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Export::testFtpConnexion
-     */
     public function testTestFtpConnexion()
     {
         $framework = $this;
         self::$DI['app']['phraseanet.ftp.client'] = self::$DI['app']->protect(function ($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false) use ($framework) {
             return $framework->getMockBuilder('\ftpclient')
-                    ->setMethods(['login', 'close'])
                     ->disableOriginalConstructor()
                     ->getMock();
         });
@@ -56,15 +49,11 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response, $datas);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Export::testFtpConnexion
-     */
     public function testFtpConnexionNoXMLHTTPRequests()
     {
         $framework = $this;
         self::$DI['app']['phraseanet.ftp.client'] = self::$DI['app']->protect(function ($host, $port = 21, $timeout = 90, $ssl = false, $proxy = false, $proxyport = false) use ($framework) {
             $ftpStub = $framework->getMockBuilder('\ftpclient')
-                ->setMethods(['login', 'close'])
                 ->disableOriginalConstructor()
                 ->getMock();
 
@@ -82,9 +71,6 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Export::exportFtp
-     */
     public function testExportFtpNoDocs()
     {
         $randomValue = $this->setSessionFormToken('prodExportFTP');
@@ -107,10 +93,7 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response, $datas);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Export::exportFtp
-     * @dataProvider getMissingArguments
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getMissingArguments')]
     public function testExportFtpBadRequest($params)
     {
         $randomValue = $this->setSessionFormToken('prodExportFTP');
@@ -119,7 +102,7 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertBadResponse(self::$DI['client']->getResponse());
     }
 
-    public function getMissingArguments()
+    public static function getMissingArguments()
     {
         return [
             [[]],
@@ -130,9 +113,6 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         ];
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Export::exportFtp
-     */
     public function testExportFtp()
     {
         $app = $this->getApplication();
@@ -171,9 +151,6 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         $app['conf']->set('registry', $bkp);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Export::exportMail
-     */
     public function testExportMail()
     {
         //  deliver method removed in the listener
@@ -192,10 +169,6 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Export::connect
-     * @covers Alchemy\Phrasea\Controller\Prod\Export::call
-     */
     public function testRequireAuthentication()
     {
         $this->logout($this->getApplication());

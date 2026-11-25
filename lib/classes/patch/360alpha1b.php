@@ -10,7 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 
 class patch_360alpha1b extends patchAbstract
 {
@@ -53,9 +53,8 @@ class patch_360alpha1b extends patchAbstract
             $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
 
             $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
-        } catch (DBALException $e) {
+            $stmt->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
 
         }
 

@@ -56,8 +56,8 @@ class patch_386alpha4a implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        $repo = $app['orm.em']->getRepository('Phraseanet:UsrList');
-        foreach ($app['orm.em']->getRepository('Phraseanet:User')->findDeleted() as $user) {
+        $repo = $app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\UsrList');
+        foreach ($app['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findDeleted() as $user) {
             foreach ($repo->findUserLists($user) as $list) {
                 $app['orm.em']->remove($list);
             }

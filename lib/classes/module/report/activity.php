@@ -106,10 +106,8 @@ class module_report_activity extends module_report
                 WHERE (" . $filter['sql'] . ") AND !ISNULL(usrid)
             GROUP BY heures;";
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $res = $this->setDisplayForActivity($rs);
 
@@ -164,17 +162,13 @@ class module_report_activity extends module_report
             AND log.`" . $what . "` = :main_value
             ORDER BY date ";
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
         $sqlBuilder->setTotalrows($stmt->rowCount());
-        $stmt->closeCursor();
 
         $sql .= $sqlBuilder->getFilters()->getLimitFilter();
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->setChamp($rs);
         $this->initDefaultConfigColumn($this->champ);
@@ -226,10 +220,8 @@ class module_report_activity extends module_report
 
         $sql .= !$no_answer ? ' LIMIT ' . $this->nb_top : '';
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->setChamp($rs);
         $this->setDisplay($tab);
@@ -247,7 +239,7 @@ class module_report_activity extends module_report
             $this->report['value2'][] = $row['nb_rep'];
         }
 
-        $this->total = sizeof($this->result);
+        $this->total = count((array) $this->result);
         //calculate prev and next page
         $this->calculatePages();
         //do we display navigator ?
@@ -288,10 +280,8 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $this->setChamp($rs);
         $this->setDisplay($tab);
@@ -381,17 +371,13 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->req), FILE_APPEND);
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($this->req);
-        $stmt->execute($params);
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($this->req, $params);
         $sqlBuilder->setTotalrows($stmt->rowCount());
-        $stmt->closeCursor();
 
         $this->enable_limit ? $this->req .= " LIMIT 0," . $this->nb_record : "";
 
-        $stmt = $sqlBuilder->getConnBas()->prepare($this->req);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($this->req, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $i = 0;
         $total_connexion = 0;
@@ -469,10 +455,8 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt =  $sqlBuilder->getConnBas()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $sqlBuilder->getConnBas()->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $save_user = "";
         $i = -1;
@@ -546,7 +530,7 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, var_export($this->result, true)), FILE_APPEND);
 
-        $this->total = sizeof($this->result);
+        $this->total = count((array) $this->result);
         $this->calculatePages();
         $this->setDisplayNav();
         $this->setReport();
@@ -601,10 +585,8 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             $kttd = 'top_ten_doc';
@@ -682,11 +664,9 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
         $total = $stmt->rowCount();
-        $stmt->closeCursor();
 
         for ($i = 0; $i < 24; $i ++) {
             $res[$i] = 0;
@@ -741,10 +721,8 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             $date = new DateTime($row['ddate']);
@@ -797,15 +775,14 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
-            $result[$row['usrid']]['lib'] = $row['user'];
-            $result[$row['usrid']]['nb'] = (int) $row['nb'];
-            $result[$row['usrid']]['id'] = $row['usrid'];
+            $usrId = $row['usrid'] ?? '';
+            $result[$usrId]['lib'] = $row['user'];
+            $result[$usrId]['nb'] = (int) $row['nb'];
+            $result[$usrId]['id'] = $row['usrid'];
         }
 
         return $result;
@@ -850,10 +827,8 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         $conv = [" " => ""];
         foreach ($rs as $row) {
@@ -905,10 +880,8 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             ($row['referrer'] != 'NO REFERRER') ?
@@ -962,10 +935,8 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
         foreach ($rs as $row) {
             $date = new DateTime($row['ddate']);
             $result[$date->format(DATE_ATOM)] = $row['activity'];
@@ -1010,10 +981,8 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
             $date = $app['date-formatter']->getPrettyString(new DateTime($row['ddate']));
@@ -1060,15 +1029,14 @@ class module_report_activity extends module_report
 
 // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $conn->executeQuery($sql, $params);
+        $rs = $stmt->fetchAllAssociative();
 
         foreach ($rs as $row) {
-            $result[$row['usrid']]['lib'] = $row['user'];
-            $result[$row['usrid']]['nb'] = $row['nb'];
-            $result[$row['usrid']]['id'] = $row['usrid'];
+            $usrId = $row['usrid'] ?? '';
+            $result[$usrId]['lib'] = $row['user'];
+            $result[$usrId]['nb'] = $row['nb'];
+            $result[$usrId]['id'] = $row['usrid'];
         }
 
         return $result;

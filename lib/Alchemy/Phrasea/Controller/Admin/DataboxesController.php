@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Databox\DataboxConnectionSettings;
 use Alchemy\Phrasea\Databox\DataboxService;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,12 +47,10 @@ class DataboxesController extends Controller
             try {
                 $databox = $this->findDataboxById($sbasId);
 
-                /** @var \PDO $pdoConnection */
-                $pdoConnection = $databox->get_connection()->getWrappedConnection();
                 $sbas[$sbasId] = [
                     'version'     => $databox->get_version(),
                     'image'       => '/assets/common/images/icons/foldph20close_0.gif',
-                    'server_info' => $pdoConnection->getAttribute(\PDO::ATTR_SERVER_VERSION),
+                    'server_info' => $databox->get_connection()->getNativeConnection()->getAttribute(\PDO::ATTR_SERVER_VERSION),
                     'name'        => \phrasea::sbas_labels($sbasId, $this->app)
                 ];
             } catch (\Exception $e) {
@@ -97,8 +95,8 @@ class DataboxesController extends Controller
             'files'      => new \DirectoryIterator($this->app['root.path'] . '/lib/conf.d/data_templates'),
             'sbas'       => $sbas,
             'error_msg'  => $errorMsg,
-            'advices'    => $request->query->get('advices', []),
-            'reloadTree' => (Boolean) $request->query->get('reload-tree'),
+            'advices'    => $request->query->all('advices'),
+            'reloadTree' => (bool) $request->query->get('reload-tree'),
         ]);
     }
 
@@ -134,7 +132,7 @@ class DataboxesController extends Controller
         catch (\InvalidArgumentException $exception) {
             return $this->handleInvalidArgument($exception);
         }
-        catch (DBALException $e) {
+        catch (\Doctrine\DBAL\Exception $e) {
             return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
         }
         catch (\Exception $e) {

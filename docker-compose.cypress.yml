@@ -1,0 +1,39 @@
+# Phraseanet end-to-end tests (Cypress 16.3.0).
+#
+# Runs against an instance that is already up (by default the local stack published
+# on the host port PHRASEANET_APP_PORT). Separate project name, so it never touches
+# the Phraseanet containers.
+#
+#   docker compose -f docker-compose.cypress.yml run --rm cypress
+#   docker compose -f docker-compose.cypress.yml run --rm cypress --spec 'cypress/e2e/01-prod/*.cy.js'
+#   docker compose -f docker-compose.cypress.yml run --rm cypress --browser firefox
+#
+# Target another instance (no relay needed over HTTPS):
+#   CYPRESS_BASE_URL=https://phraseanet.example.com PHRASEANET_RELAY= docker compose -f ... run --rm cypress
+name: phraseanet-cypress
+
+services:
+  cypress:
+    build:
+      context: ./tests/cypress
+    image: phraseanet-cypress:16.3.0
+    working_dir: /e2e
+    ipc: host
+    shm_size: 2gb
+    extra_hosts:
+      # Lets the container reach the stack published on the host (Linux; built-in on Docker Desktop).
+      - "host.docker.internal:host-gateway"
+    environment:
+      # The browser opens http://localhost:<port>, relayed by socat to the stack published on the host
+      # (a local HTTP stack may send its session cookie as "Secure", accepted on localhost only).
+      CYPRESS_BASE_URL: ${CYPRESS_BASE_URL:-http://localhost:${PHRASEANET_APP_PORT:-8082}}
+      PHRASEANET_RELAY: ${PHRASEANET_RELAY-host.docker.internal:${PHRASEANET_APP_PORT:-8082}}
+      CYPRESS_ADMIN_LOGIN: ${CYPRESS_ADMIN_LOGIN:-${PHRASEANET_ADMIN_ACCOUNT_EMAIL:-admin@phraseanet.local}}
+      CYPRESS_ADMIN_PASSWORD: ${CYPRESS_ADMIN_PASSWORD:-${PHRASEANET_ADMIN_ACCOUNT_PASSWORD}}
+      # Set to 1 to also run the tests that write on existing records (edit, status, rotation, move…).
+      CYPRESS_ALLOW_RECORD_WRITES: ${CYPRESS_ALLOW_RECORD_WRITES:-0}
+      CYPRESS_RETRIES: ${CYPRESS_RETRIES:-1}
+    volumes:
+      # Specs are mounted: editing a test does not need a rebuild.
+      - ./tests/cypress/cypress:/e2e/cypress
+      - ./tests/cypress/cypress.config.js:/e2e/cypress.config.js:ro

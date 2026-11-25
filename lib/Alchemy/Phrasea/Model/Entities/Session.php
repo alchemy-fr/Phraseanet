@@ -14,88 +14,60 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="Sessions")
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\SessionRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\SessionRepository::class)]
+#[ORM\Table(name: 'Sessions')]
 class Session
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
      * @return User
      **/
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=512)
-     */
+    #[ORM\Column(type: 'string', length: 512)]
     private $user_agent;
 
-    /**
-     * @ORM\Column(type="string", length=40, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 40, nullable: true)]
     private $ip_address;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $platform;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $browser_name;
 
-    /**
-     * @ORM\Column(type="string", length=32, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
     private $browser_version;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $screen_width;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $screen_height;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true, unique=true)
-     */
+    #[ORM\Column(type: 'string', length: 128, nullable: true, unique: true)]
     private $token;
 
-    /**
-     * @ORM\Column(type="string", length=64, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
     private $nonce;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\OneToMany(targetEntity="SessionModule", mappedBy="session", cascade={"all"})
-     * @ORM\OrderBy({"module_id" = "ASC"})
-     */
+    #[ORM\OneToMany(targetEntity: SessionModule::class, mappedBy: 'session', cascade: ['all'])]
+    #[ORM\OrderBy(['module_id' => 'ASC'])]
     private $modules;
 
     /**

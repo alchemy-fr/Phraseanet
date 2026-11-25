@@ -43,6 +43,6 @@ class Geoname extends Constraint
 
     public static function create(Application $app)
     {
-        return new static($app['geonames.connector']);
+        return new self($app['geonames.connector']);
     }
 }

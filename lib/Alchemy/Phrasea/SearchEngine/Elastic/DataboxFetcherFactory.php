@@ -73,7 +73,7 @@ class DataboxFetcherFactory
      * @param FetcherDelegateInterface $fetcherDelegate
      * @return Fetcher
      */
-    public function createFetcher(\databox $databox, FetcherDelegateInterface $fetcherDelegate = null)
+    public function createFetcher(\databox $databox, ?FetcherDelegateInterface $fetcherDelegate = null)
     {
         $connection = $databox->get_connection();
 

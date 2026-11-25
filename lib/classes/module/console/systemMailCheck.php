@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Setup\Version\MailChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class module_console_systemMailCheck extends Command
 {
@@ -43,7 +44,7 @@ class module_console_systemMailCheck extends Command
         foreach ($bad_users as $email => $users) {
             if ($input->getOption('list')) {
                 $this->write_infos($email, $users, $output, $appBox);
-            } elseif ($this->manage_group($email, $users, $output, $appBox) === false) {
+            } elseif ($this->manage_group($email, $users, $input, $output, $appBox) === false) {
                 break;
             }
 
@@ -55,20 +56,20 @@ class module_console_systemMailCheck extends Command
         return 0;
     }
 
-    protected function manage_group($email, $users, $output, $appbox)
+    protected function manage_group($email, $users, InputInterface $input, $output, $appbox)
     {
         $is_stopped = false;
 
         while (! $is_stopped) {
             $this->write_infos($email, $users, $output, $appbox);
 
-            $dialog = $this->getHelperSet()->get('dialog');
+            $dialog = $this->getHelper('question');
 
             do {
                 $question = '<question>What should I do ? '
                     . 'continue (C), detach from mail (d), or stop (s)</question>';
 
-                $continue = mb_strtolower($dialog->ask($output, $question, 'C'));
+                $continue = mb_strtolower($dialog->ask($input, $output, new Question($question, 'C')));
             } while ( ! in_array($continue, ['c', 'd', 's']));
 
             if ($continue == 's') {
@@ -76,9 +77,9 @@ class module_console_systemMailCheck extends Command
             } elseif ($continue == 'c') {
                 return true;
             } elseif ($continue == 'd') {
-                $dialog = $this->getHelperSet()->get('dialog');
+                $dialog = $this->getHelper('question');
 
-                $id = $dialog->ask($output, '<question>Which id ?</question>', '');
+                $id = $dialog->ask($input, $output, new Question('<question>Which id ?</question>', ''));
 
                 try {
                     $tmp_user = $this->container['repo.users']->find($id);

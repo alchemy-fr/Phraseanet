@@ -1,0 +1,43 @@
+{
+  "name": "alchemy/worker-bundle",
+  "description": "Symfony bundle for alchemy/worker-component",
+  "version": "5.0.0",
+  "authors": [
+    {
+      "name": "Thibaud Fabre",
+      "email": "thibaud@aztech.io"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Alchemy\\WorkerBundle\\": "src/WorkerBundle",
+      "Alchemy\\WorkerProvider\\": "src/WorkerProvider"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Alchemy\\WorkerBundle\\Tests\\": "tests/unit/WorkerBundle",
+      "Alchemy\\WorkerProvider\\Tests\\": "tests/unit/WorkerProvider"
+    }
+  },
+  "license": "MIT",
+  "require-dev": {
+    "phpunit/phpunit": "^11.5",
+    "symfony/config": "^7.4",
+    "symfony/console": "^7.4",
+    "symfony/dependency-injection": "^7.4",
+    "symfony/http-kernel": "^7.4",
+    "symfony/yaml": "^7.4"
+  },
+  "require": {
+    "php": "^8.2",
+    "alchemy/worker-component": "^5.0",
+    "alchemy/queue-bundle": "^5.0",
+    "pimple/pimple": "^3.6",
+    "psr/log": "^1.0 || ^2.0 || ^3.0"
+  },
+  "suggest": {
+    "symfony/console": "To use the worker commands (^7.4)",
+    "symfony/yaml": "To use the Symfony bundle and the show-configuration command (^7.4)"
+  }
+}

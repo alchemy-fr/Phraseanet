@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Cache;
 
 use Alchemy\Phrasea\Cache\XcacheCache;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class XcacheCacheTest extends \PhraseanetTestCase
 {
     /**
@@ -15,7 +13,7 @@ class XcacheCacheTest extends \PhraseanetTestCase
      */
     protected $object;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         if ( ! function_exists('xcache_info')) {

@@ -1,12 +1,12 @@
 
-{% extends app['request'].isXmlHttpRequest ? "admin/common/ajax_wrap.html.twig" : "admin/common/iframe_wrap.html.twig" %}
+{% extends app['request_stack'].currentRequest.isXmlHttpRequest ? "admin/common/ajax_wrap.html.twig" : "admin/common/iframe_wrap.html.twig" %}
 
 {% block content %}
 
-{% if app['request'].query.get('user-updated') is not none%}
+{% if app['request_stack'].currentRequest.query.get('user-updated') is not none%}
     <div class="alert alert-success">
     <button class="close" data-dismiss="alert" type="button">×</button>
-    {% set user_count = app['request'].get('user-updated') %}
+    {% set user_count = app['request_stack'].currentRequest.get('user-updated') %}
     {% if user_count == 1 %}
         {% trans %}The user has been created.{% endtrans %}
     {% else %}

@@ -19,67 +19,42 @@ use Exception;
 use Gedmo\Mapping\Annotation as Gedmo;
 use record_adapter;
 
-/**
- * @ORM\Table(name="BasketElements",
- *     uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})
- * },
- *     indexes={
- *     @ORM\Index(name="vote_expired", columns={"vote_expired"})
- * }
- *     )
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\BasketElementRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\BasketElementRepository::class)]
+#[ORM\Table(name: 'BasketElements')]
+#[ORM\Index(name: 'vote_expired', columns: ['vote_expired'])]
+#[ORM\UniqueConstraint(name: 'unique_recordcle', columns: ['basket_id', 'sbas_id', 'record_id'])]
 class BasketElement
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $record_id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $sbas_id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $ord;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\OneToMany(targetEntity="BasketElementVote", mappedBy="basket_element", cascade={"all"})
-     */
+    #[ORM\OneToMany(targetEntity: BasketElementVote::class, mappedBy: 'basket_element', cascade: ['all'])]
     private $votes;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Basket", inversedBy="elements", cascade={"persist"})
-     * @ORM\JoinColumn(name="basket_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: Basket::class, inversedBy: 'elements', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'basket_id', referencedColumnName: 'id')]
     private $basket;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $vote_expired;
 
     /**
@@ -327,7 +302,7 @@ class BasketElement
      * @param  Basket        $basket
      * @return BasketElement
      */
-    public function setBasket(Basket $basket = null)
+    public function setBasket(?Basket $basket = null)
     {
         $this->basket = $basket;
 

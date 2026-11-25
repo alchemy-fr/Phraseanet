@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\WorkerManager\Worker\Factory;
 
 use Alchemy\Phrasea\WorkerManager\Worker\Factory\CallableWorkerFactory;
 
-class CallableWorkerFactoryTest extends \PHPUnit_Framework_TestCase
+class CallableWorkerFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testClassImplements()
     {

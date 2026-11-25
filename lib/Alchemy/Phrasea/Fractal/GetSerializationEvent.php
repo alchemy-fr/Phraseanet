@@ -10,7 +10,7 @@
 
 namespace Alchemy\Phrasea\Fractal;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class GetSerializationEvent extends Event
 {

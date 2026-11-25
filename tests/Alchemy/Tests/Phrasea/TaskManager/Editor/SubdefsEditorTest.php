@@ -4,13 +4,11 @@ namespace Alchemy\Tests\Phrasea\TaskManager\Editor;
 
 use Alchemy\Phrasea\TaskManager\Editor\SubdefsEditor;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class SubdefsEditorTest extends EditorTestCase
 {
-    public function provideDataForXMLUpdatesFromForm()
+    public static function provideDataForXMLUpdatesFromForm()
     {
         return [
             [

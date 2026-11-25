@@ -3,27 +3,27 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Utilities\CachedTranslator;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\ServiceProviderInterface;
 use Symfony\Component\Translation\Loader\PoFileLoader;
-use Symfony\Component\Translation\MessageSelector;
+use Symfony\Component\Translation\Formatter\MessageFormatter;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use JMS\TranslationBundle\Translation\Loader\Symfony\XliffLoader;
+use Pimple\Container;
 
 class TranslationServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['translator.cache-options'] = [];
 
-        $app['translator'] = $app->share(function ($app) {
+        $app['translator'] = function ($app) {
             $app['translator.cache-options'] = array_replace(
                 [
                     'debug' => $app['debug'],
                 ], $app['translator.cache-options']
             );
 
-            $translator = new CachedTranslator($app, $app['translator.message_selector'], $app['translator.cache-options']);
+            $translator = new CachedTranslator($app, $app['translator.message_formatter'], $app['translator.cache-options']);
 
             // Handle deprecated 'locale_fallback'
             if (isset($app['locale_fallback'])) {
@@ -55,17 +55,13 @@ class TranslationServiceProvider implements ServiceProviderInterface
             }
 
             return $translator;
-        });
+        };
 
-        $app['translator.message_selector'] = $app->share(function () {
-            return new MessageSelector();
-        });
+        $app['translator.message_formatter'] = function () {
+            return new MessageFormatter();
+        };
 
         $app['translator.domains'] = [];
         $app['locale_fallbacks'] = ['en'];
-    }
-
-    public function boot(Application $app)
-    {
     }
 }

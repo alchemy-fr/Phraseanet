@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Plugin;
 use Alchemy\Phrasea\Plugin\PluginManager;
 use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PluginManagerTest extends PluginTestCase
 {
     public function testListGoodPlugins()
@@ -61,8 +59,6 @@ class PluginManagerTest extends PluginTestCase
 
     private function createValidatorMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Plugin\Schema\PluginValidator')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Plugin\Schema\PluginValidator');
     }
 }

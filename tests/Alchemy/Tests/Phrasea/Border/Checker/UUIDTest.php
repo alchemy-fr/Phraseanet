@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\UUID;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class UUIDTest extends \PhraseanetTestCase
 {
     /**
@@ -18,7 +16,7 @@ class UUIDTest extends \PhraseanetTestCase
     protected $filename;
     protected $media;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new UUID(self::$DI['app']);
@@ -27,7 +25,7 @@ class UUIDTest extends \PhraseanetTestCase
         $this->media = self::$DI['app']['mediavorus']->guess($this->filename);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->media = null;
         if (file_exists($this->filename)) {
@@ -36,9 +34,6 @@ class UUIDTest extends \PhraseanetTestCase
         parent::tearDown();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\UUID::check
-     */
     public function testCheck()
     {
         $response = $this->object->check(self::$DI['app']['orm.em'], new File(self::$DI['app'], $this->media, self::$DI['collection']));
@@ -48,12 +43,9 @@ class UUIDTest extends \PhraseanetTestCase
         $this->assertFalse($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\UUID::check
-     */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getUUID'], [self::$DI['app'], $this->media, self::$DI['collection']]);
+        $mock = $this->getMockBuilder('\\Alchemy\\Phrasea\\Border\\File')->setConstructorArgs([self::$DI['app'], $this->media, self::$DI['collection']])->onlyMethods(['getUUID'])->getMock();
 
         $mock
             ->expects($this->once())
@@ -68,11 +60,8 @@ class UUIDTest extends \PhraseanetTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\UUID::getMessage
-     */
     public function testGetMessage()
     {
-        $this->assertInternalType('string', $this->object->getMessage($this->createTranslatorMock()));
+        $this->assertIsString($this->object->getMessage($this->createTranslatorMock()));
     }
 }

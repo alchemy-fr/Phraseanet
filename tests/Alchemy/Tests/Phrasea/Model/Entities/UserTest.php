@@ -5,16 +5,14 @@ namespace Alchemy\Tests\Phrasea\Model\Entities;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class UserTest extends \PhraseanetTestCase
 {
     /** @var User */
     private $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->user = new User();
@@ -27,24 +25,20 @@ class UserTest extends \PhraseanetTestCase
         $this->assertInstanceOf('\Doctrine\Common\Collections\ArrayCollection', $this->user->getSettings());
     }
 
-    /**
-     * @dataProvider genderProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('genderProvider')]
     public function testSetGender($gender)
     {
         $this->user->setGender($gender);
         $this->assertEquals($this->user->getGender(), $gender);
     }
 
-    /**
-     * @dataProvider invalidGenderProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidGenderProvider')]
     public function testInvalidSetGender($gender)
     {
-        $this->setExpectedException(
-            'Alchemy\Phrasea\Exception\InvalidArgumentException',
-            'Invalid gender '. (string) $gender . '.'
+        $this->expectException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException'
         );
+        $this->expectExceptionMessage('Invalid gender '. (string) $gender . '.');
         $this->user->setGender($gender);
     }
 
@@ -61,10 +55,10 @@ class UserTest extends \PhraseanetTestCase
 
     public function testInvalidLocale()
     {
-        $this->setExpectedException(
-            'Alchemy\Phrasea\Exception\InvalidArgumentException',
-            'Invalid locale invalid_local.'
+        $this->expectException(
+            'Alchemy\Phrasea\Exception\InvalidArgumentException'
         );
+        $this->expectExceptionMessage('Invalid locale invalid_local.');
         $this->user->setLocale('invalid_local');
     }
 
@@ -130,7 +124,7 @@ class UserTest extends \PhraseanetTestCase
         $this->assertSame($user, $template->getTemplateOwner());
     }
 
-    public function genderProvider()
+    public static function genderProvider()
     {
         return [
             [null],
@@ -140,7 +134,7 @@ class UserTest extends \PhraseanetTestCase
         ];
     }
 
-    public function invalidGenderProvider()
+    public static function invalidGenderProvider()
     {
         return [
             [false],

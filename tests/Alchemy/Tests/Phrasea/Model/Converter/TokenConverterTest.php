@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Model\Converter;
 
 use Alchemy\Phrasea\Model\Converter\TokenConverter;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TokenConverterTest extends \PhraseanetTestCase
 {
     public function testConvert()
@@ -18,12 +16,10 @@ class TokenConverterTest extends \PhraseanetTestCase
         $this->assertSame($token, $converter->convert($token->getValue()));
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @expectedExceptionMessage Token is not valid.
-     */
     public function testConvertFailure()
     {
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+        $this->expectExceptionMessage('Token is not valid.');
         $converter = new TokenConverter(self::$DI['app']['repo.tokens']);
         $converter->convert('prout');
     }

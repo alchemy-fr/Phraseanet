@@ -3,13 +3,13 @@
 namespace Alchemy\Tests\Phrasea\Core\CLIProvider;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Core\CLIProvider\TranslationExtractorServiceProvider
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TranslationExtractorServiceProviderTest extends ServiceProviderTestCase
 {
-    public function provideServiceDescription()
+    public static function provideServiceDescription()
     {
         return [
             [

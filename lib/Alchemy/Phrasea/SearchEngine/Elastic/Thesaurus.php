@@ -79,7 +79,7 @@ class Thesaurus
      * @param  boolean     $strict Whether to enable strict search or not
      * @return Concept[]           Matching concepts
      */
-    private function findConcepts($term, $lang = null, Filter $filter = null, $strict = false)
+    private function findConcepts($term, $lang = null, ?Filter $filter = null, $strict = false)
     {
         return $strict ?
             $this->findConceptsStrict($term, $lang, $filter)
@@ -88,7 +88,7 @@ class Thesaurus
             ;
     }
 
-    private function findConceptsStrict($term, $lang = null, Filter $filter = null)
+    private function findConceptsStrict($term, $lang = null, ?Filter $filter = null)
     {
         if (!($term instanceof TermInterface)) {
             $term = new Term($term);
@@ -241,7 +241,7 @@ class Thesaurus
         return $concepts;
     }
 
-    private function findConceptsFuzzy($term, $lang = null, Filter $filter = null)
+    private function findConceptsFuzzy($term, $lang = null, ?Filter $filter = null)
     {
         if (!($term instanceof TermInterface)) {
             $term = new Term($term);

@@ -13,22 +13,25 @@ namespace Alchemy\Phrasea\Core\MetaProvider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
-use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
+use Alchemy\Phrasea\Core\Connection\Connection as PhraseanetConnection;
+use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use Doctrine\DBAL\Events;
 use Doctrine\ORM\Configuration;
-use Gedmo\DoctrineExtensions as GedmoExtension;
-use Silex\Application;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Provider\DoctrineServiceProvider;
-use Silex\ServiceProviderInterface;
 
 class DatabaseMetaProvider implements ServiceProviderInterface
 {
 
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app->register(new DoctrineServiceProvider());
+        $app['db.default_options'] = array_replace($app['db.default_options'], [
+            'wrapperClass' => PhraseanetConnection::class,
+        ]);
         $this->setupDBAL($app);
         $app->register(new DoctrineOrmServiceProvider());
         $this->setupOrms($app);
@@ -37,7 +40,7 @@ class DatabaseMetaProvider implements ServiceProviderInterface
 
     private function setupDBAL(PhraseaApplication $app)
     {
-        $app['dbs.config'] = $app->share($app->extend('dbs.config', function ($configs, $app) {
+        $app->extend('dbs.config', function ($configs, $app) {
             if (!isset($app['dbal.config.register.loggers'])) {
                 return $configs;
             }
@@ -49,9 +52,9 @@ class DatabaseMetaProvider implements ServiceProviderInterface
             }
 
             return $configs;
-        }));
+        });
 
-        $app['dbs.event_manager'] = $app->share($app->extend('dbs.event_manager', function ($eventManagers, $app) {
+        $app->extend('dbs.event_manager', function ($eventManagers, $app) {
             foreach ($eventManagers->keys() as $name) {
                 /** @var EventManager $eventManager */
                 $eventManager = $eventManagers[$name];
@@ -61,17 +64,18 @@ class DatabaseMetaProvider implements ServiceProviderInterface
             }
 
             return $eventManagers;
-        }));
+        });
     }
 
     /**
      * @param ConnectionEventArgs $args
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function postConnect(ConnectionEventArgs $args)
     {
-        if ('sqlite' == $args->getDatabasePlatform()->getName()) {
-            $args->getConnection()->exec('PRAGMA foreign_keys = ON');
+        $params = $args->getConnection()->getParams();
+        if (in_array($params['driver'] ?? null, ['pdo_sqlite', 'sqlite3'], true)) {
+            $args->getConnection()->executeStatement('PRAGMA foreign_keys = ON');
         }
     }
 
@@ -105,11 +109,8 @@ class DatabaseMetaProvider implements ServiceProviderInterface
         $app['orm.auto_generate_proxies'] = $app['debug'];
         $app['orm.proxies_namespace'] = 'Alchemy\Phrasea\Model\Proxies';
 
-        $app['orm.ems'] = $app->share($app->extend('orm.ems', function (\Pimple $ems, $app) {
-            GedmoExtension::registerAnnotations();
-
+        $app->extend('orm.ems', function (\Pimple\Container $ems, $app) {
             foreach ($ems->keys() as $key) {
-                $app['orm.annotation.register']($key);
                 $connection = $ems[$key]->getConnection();
 
                 $app['connection.pool.manager']->add($connection);
@@ -119,11 +120,6 @@ class DatabaseMetaProvider implements ServiceProviderInterface
             }
 
             return $ems;
-        }));
-    }
-
-    public function boot(Application $app)
-    {
-        // no-op
+        });
     }
 }

@@ -50,7 +50,7 @@ class Aggregate implements FeedInterface
      * @param Feed[]                 $feeds
      * @param AggregateToken         $token
      */
-    public function __construct(EntityManagerInterface $em, array $feeds, AggregateToken $token = null)
+    public function __construct(EntityManagerInterface $em, array $feeds, ?AggregateToken $token = null)
     {
         $this->title = 'AGGREGATE';
         $this->subtitle = 'AGGREGATE SUBTITLE';
@@ -61,7 +61,7 @@ class Aggregate implements FeedInterface
         $tmp_feeds = [];
 
         foreach ($feeds as $feed) {
-            $tmp_feeds[$feed->getId()] = $feed;
+            $tmp_feeds[(string) $feed->getId()] = $feed;
         }
 
         $this->feeds = new ArrayCollection($tmp_feeds);
@@ -115,7 +115,7 @@ class Aggregate implements FeedInterface
     public function getEntries()
     {
         /** @var FeedEntryRepository $feedEntryRepository */
-        $feedEntryRepository = $this->em->getRepository('Phraseanet:FeedEntry');
+        $feedEntryRepository = $this->em->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry');
         return new AggregateEntryCollection($feedEntryRepository, $this->feeds);
     }
 
@@ -201,7 +201,7 @@ class Aggregate implements FeedInterface
         }
 
         /** @var FeedEntryRepository $feedEntryRepository */
-        $feedEntryRepository = $this->em->getRepository('Phraseanet:FeedEntry');
+        $feedEntryRepository = $this->em->getRepository('Alchemy\Phrasea\Model\Entities\FeedEntry');
 
         return $feedEntryRepository->countByFeeds($this->feeds->getKeys());
     }

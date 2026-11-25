@@ -5,12 +5,10 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\FirewallSubscriber;
 use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FirewallSubscriberTest extends \PhraseanetTestCase
 {
     public function testRedirection()
@@ -19,7 +17,7 @@ class FirewallSubscriberTest extends \PhraseanetTestCase
         unset($app['exception_handler']);
         $app['dispatcher']->addSubscriber(new FirewallSubscriber());
         $app->get('/', function () {
-            throw new HttpException(500, null, null, ['X-Phraseanet-Redirect' => '/hello-world']);
+            throw new HttpException(500, '', null, ['X-Phraseanet-Redirect' => '/hello-world']);
         });
 
         $client = new Client($app);
@@ -39,7 +37,7 @@ class FirewallSubscriberTest extends \PhraseanetTestCase
         });
 
         $client = new Client($app);
-        $this->setExpectedException('Symfony\Component\HttpKernel\Exception\HttpException');
+        $this->expectException('Symfony\Component\HttpKernel\Exception\HttpException');
         $client->request('GET', '/');
     }
 }

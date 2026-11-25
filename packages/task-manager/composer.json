@@ -1,0 +1,48 @@
+{
+    "name": "alchemy/task-manager",
+    "type": "library",
+    "description": "A manager for running parallel PHP processes command line.",
+    "keywords": ["process", "cli", "parallel"],
+    "license": "MIT",
+    "version": "6.0.0",
+    "authors": [
+        {
+            "name": "Romain Neutron",
+            "email": "imprec@gmail.com",
+            "homepage": "http://www.lickmychip.com/"
+        },
+        {
+            "name": "Phraseanet Team",
+            "email": "info@alchemy.fr",
+            "homepage": "http://www.phraseanet.com/"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-zmq": "*",
+
+        "neutron/process-manager": "^6.0",
+        "neutron/signal-handler": "^1.0",
+        "psr/log": "^1.0 || ^2.0 || ^3.0",
+        "symfony/event-dispatcher": "^7.4",
+        "symfony/event-dispatcher-contracts": "^3.0",
+        "symfony/process": "^7.4"
+    },
+    "require-dev": {
+        "monolog/monolog": "^3.0",
+        "phpunit/phpunit": "^11.5",
+        "symfony/console": "^7.4",
+        "symfony/finder": "^7.4"
+    },
+    "autoload": {
+        "psr-0": {
+            "Alchemy\\TaskManager": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "Alchemy\\Test": "tests",
+            "Alchemy\\Functional": "tests"
+        }
+    }
+}

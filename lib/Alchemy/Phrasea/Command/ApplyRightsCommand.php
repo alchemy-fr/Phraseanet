@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\DBAL\Exception as DBALException;
 
 class ApplyRightsCommand extends Command
 {
@@ -70,7 +71,7 @@ class ApplyRightsCommand extends Command
 	        //  fix collusr if user has right on collection
 	        foreach ($userAcl->get_granted_base([], [$databox->get_sbas_id()]) as $collection) {
 	            try {
-	                $stmt->execute([
+	                $stmt->executeStatement([
 	                    ':site_id'  => $this->container['conf']->get(['main', 'key']),
 	                    ':usr_id'   => $user->getId(),
 	                    ':coll_id'  => $collection->get_coll_id(),
@@ -82,8 +83,6 @@ class ApplyRightsCommand extends Command
 
 	            }
 	        }
-
-	        $stmt->closeCursor();
     	}
     }
 }

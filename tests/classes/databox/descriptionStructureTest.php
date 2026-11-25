@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class databox_descriptionStructureTest extends \PhraseanetTestCase
 {
     public function testToArray()
@@ -24,8 +22,6 @@ class databox_descriptionStructureTest extends \PhraseanetTestCase
 
     private function provideDataboxFieldMock()
     {
-        return $this->getMockBuilder('databox_field')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('databox_field');
     }
 }

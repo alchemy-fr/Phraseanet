@@ -2,10 +2,8 @@
 
 namespace Alchemy\Tests\Phrasea\Setup\Probe;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class DataboxStructureProbeTest extends ProbeTestCase
 {
     protected function getClassName()

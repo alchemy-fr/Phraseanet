@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Utilities;
 
 use Alchemy\Phrasea\Utilities\CrossDomainParser;
 
-class CrossDomainParserTest extends \PHPUnit_Framework_TestCase
+class CrossDomainParserTest extends \PHPUnit\Framework\TestCase
 {
     public function testParser()
     {

@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Authentication\Provider\Token;
 
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class IdentityTest extends \PhraseanetTestCase
 {
     public function testThatOffsetAreSetOnConstruct()
@@ -26,11 +24,9 @@ class IdentityTest extends \PhraseanetTestCase
         $this->assertEquals('image-uri', $identity->get(Identity::PROPERTY_IMAGEURL));
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
     public function testThatGetOnUnknownArgThrowsAnException()
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         $identity = new Identity();
 
         $identity->get('unknown');
@@ -96,21 +92,17 @@ class IdentityTest extends \PhraseanetTestCase
         return $identity;
     }
 
-    /**
-     * @depends testSet
-     */
+    #[\PHPUnit\Framework\Attributes\Depends('testSet')]
     public function testRemove($identity)
     {
         $identity->remove(Identity::PROPERTY_IMAGEURL);
         $this->assertFalse($identity->has(Identity::PROPERTY_IMAGEURL));
     }
 
-    /**
-     * @depends testSet
-     * @expectedException \Alchemy\Phrasea\Exception\InvalidArgumentException
-     */
+    #[\PHPUnit\Framework\Attributes\Depends('testSet')]
     public function testRemoveThrowsAnException($identity)
     {
+        $this->expectException(\Alchemy\Phrasea\Exception\InvalidArgumentException::class);
         $identity->remove(Identity::PROPERTY_IMAGEURL);
         $this->assertFalse($identity->get(Identity::PROPERTY_IMAGEURL));
     }

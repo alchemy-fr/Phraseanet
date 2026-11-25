@@ -63,10 +63,10 @@ class AdminConfigurationController extends Controller
             }
         }
 
-        $form = $app->form(new WorkerConfigurationType($AMQPConnection), $conf);
+        $form = $app->form(WorkerConfigurationType::class, $conf, ['amqp_connection' => $AMQPConnection]);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             // save config
             // too bad we must remove null entries from data to not save in conf
             $_data = $form->getData();
@@ -419,14 +419,14 @@ class AdminConfigurationController extends Controller
     {
         $options = $this->getElasticsearchOptions();
 
-        $form = $app->form(new WorkerSearchengineType(), $options);
+        $form = $app->form(WorkerSearchengineType::class, $options);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $populateInfo = $this->getData($form);
 
-            $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($populateInfo));
+            $this->getDispatcher()->dispatch(new PopulateIndexEvent($populateInfo), WorkerEvents::POPULATE_INDEX);
 
             // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
             return $app->redirectPath('worker_admin', ['_fragment'=>'worker-searchengine']);
@@ -450,10 +450,10 @@ class AdminConfigurationController extends Controller
     public function ftpAction(PhraseaApplication $app, Request $request)
     {
         $ftpConfig = $this->getFtpConfiguration();
-        $form = $app->form(new WorkerFtpType(), $ftpConfig);
+        $form = $app->form(WorkerFtpType::class, $ftpConfig);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             // save new ftp config
             $app['conf']->set(['workers', 'ftp'], array_merge($ftpConfig, $form->getData()));
 
@@ -477,7 +477,7 @@ class AdminConfigurationController extends Controller
             $config['ttl_retry'] /= 1000;
         }
         /** @var Form $form */
-        $form = $app->form(new WorkerValidationReminderType($this->getAMQPConnection()), $config);
+        $form = $app->form(WorkerValidationReminderType::class, $config, ['amqp_connection' => $this->getAMQPConnection()]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -539,7 +539,7 @@ class AdminConfigurationController extends Controller
             $config['xmlSetting'] = $this->getDefaultRecordsActionsSettings();
         }
 
-        $form = $app->form(new WorkerRecordsActionsType(), $config);
+        $form = $app->form(WorkerRecordsActionsType::class, $config);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

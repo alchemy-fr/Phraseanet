@@ -5,13 +5,11 @@ namespace Alchemy\Tests\Phrasea\Core\Event\Subscriber;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaExceptionHandlerSubscriber;
 use Alchemy\Phrasea\Core\PhraseaExceptionHandler;
-use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpKernel\HttpKernelBrowser as Client;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PhraseaExceptionHandlerSubscriberTest extends \PhraseanetTestCase
 {
     public function testAResponseIsReturned()
@@ -52,7 +50,7 @@ class PhraseaExceptionHandlerSubscriberTest extends \PhraseanetTestCase
         $app['exception_handler']->disable();
 
         $client = new Client($app);
-        $this->setExpectedException(\Exception::class);
+        $this->expectException(\Exception::class);
         $client->request('GET', '/');
     }
 }

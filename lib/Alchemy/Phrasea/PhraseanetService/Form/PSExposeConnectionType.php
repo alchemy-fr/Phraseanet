@@ -4,23 +4,15 @@ namespace Alchemy\Phrasea\PhraseanetService\Form;
 
 use Silex\Application;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
-use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PSExposeConnectionType extends AbstractType
 {
-    private $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
@@ -47,9 +39,7 @@ class PSExposeConnectionType extends AbstractType
             ->add('auth_provider_name', ChoiceType::class, [
                 'label'    => 'admin:phrasea-service-setting:tab:expose:: auth provider name with type openid',
                 'required' => false,
-                'choice_list' => new ArrayChoiceList(
-                    $this->getEligibleProvider()
-                )
+                'choices'  => $this->getEligibleProvider($options['app'])
             ])
             ->add('expose_name', TextType::class, [
                 'label' =>  'admin:phrasea-service-setting:tab:expose:: Name',
@@ -107,15 +97,21 @@ class PSExposeConnectionType extends AbstractType
         ;
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setRequired('app');
+        $resolver->setAllowedTypes('app', Application::class);
+    }
+
+    public function getBlockPrefix(): string
     {
         return 'ps_expose_connection';
     }
 
-    private function getEligibleProvider()
+    private function getEligibleProvider(Application $app)
     {
         $values = array_keys(
-            array_filter($this->app['conf']->get(['authentication', 'providers'], []),
+            array_filter($app['conf']->get(['authentication', 'providers'], []),
             function ($provider) {
                   return ($provider['type'] == 'openid' || $provider['type'] == 'ps-auth' || $provider['type'] == 'PsAuth');
              })

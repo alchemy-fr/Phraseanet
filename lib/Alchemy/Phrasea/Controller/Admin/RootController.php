@@ -71,7 +71,7 @@ class RootController extends Controller
             $this->app->abort(400, $this->app->trans('Bad request format, only JSON is allowed'));
         }
 
-        if (0 === count($tests = $request->query->get('tests', []))) {
+        if (0 === count($tests = $request->query->all('tests'))) {
             $this->app->abort(400, $this->app->trans('Missing tests parameter'));
         }
 
@@ -263,8 +263,8 @@ class RootController extends Controller
             'name'       => $request->request->get('name', ''),
             'labelon'    => $request->request->get('label_on', ''),
             'labeloff'   => $request->request->get('label_off', ''),
-            'labels_on'  => $request->request->get('labels_on', []),
-            'labels_off' => $request->request->get('labels_off', []),
+            'labels_on'  => $request->request->all('labels_on'),
+            'labels_off' => $request->request->all('labels_off'),
         ];
 
         $databox = $this->findDataboxById($databox_id);
@@ -477,10 +477,8 @@ class RootController extends Controller
                     LEFT JOIN  log l ON l.id = d.log_id
                     WHERE d.record_id =" . $recordId . " ORDER BY date LIMIT 1000";
 
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $logDocs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $stmt = $databox->get_connection()->executeQuery($sql);
+            $logDocs = $stmt->fetchAllAssociative();
 
             return $this->render('admin/inspector/record-detail.html.twig', [
                 'logDocs'   => $logDocs,
@@ -531,9 +529,9 @@ class RootController extends Controller
         return $this->app['manipulator.api-oauth-token'];
     }
 
-    private function dispatchEvent($eventName, StatusBitEvent $event = null)
+    private function dispatchEvent($eventName, ?StatusBitEvent $event = null)
     {
-        $this->app['dispatcher']->dispatch($eventName, $event);
+        $this->app['dispatcher']->dispatch($event, $eventName);
     }
 
     /**

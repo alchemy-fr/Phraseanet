@@ -46,7 +46,7 @@ class UserProvider implements ControlProviderInterface
      * @param  \databox $on_databox
      * @return Term[]
      */
-    public function find($query, User $for_user, \databox $on_databox = null)
+    public function find($query, User $for_user, ?\databox $on_databox = null)
     {
         $user_query = $this->app['phraseanet.user-query'];
 

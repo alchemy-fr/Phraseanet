@@ -33,7 +33,7 @@ class QueryContext
      * @param $queryLocale
      * @param array $fields
      */
-    public function __construct($options, Structure $structure, array $locales, $queryLocale, array $fields = null)
+    public function __construct($options, Structure $structure, array $locales, $queryLocale, ?array $fields = null)
     {
         $this->structure = $structure;
         $this->locales = $locales;

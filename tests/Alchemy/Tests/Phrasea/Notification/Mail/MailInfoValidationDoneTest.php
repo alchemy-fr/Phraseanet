@@ -6,23 +6,17 @@ use Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone;
 use Alchemy\Phrasea\Exception\LogicException;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailInfoValidationDoneTest extends MailWithLinkTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone::setTitle
-     */
     public function testSetTitle()
     {
         $this->assertEquals('push::mail:: Rapport de validation de %user% pour %title%', $this->getMail()->getSubject());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone::setUser
-     */
     public function testSetUser()
     {
         $this->assertEquals('push::mail:: Rapport de validation de %user% pour %title%', $this->getMail()->getSubject());
@@ -42,7 +36,7 @@ class MailInfoValidationDoneTest extends MailWithLinkTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 
@@ -97,7 +91,7 @@ class MailInfoValidationDoneTest extends MailWithLinkTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 

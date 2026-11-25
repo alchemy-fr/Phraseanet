@@ -34,7 +34,7 @@ use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\ResourceInterface;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,7 +93,7 @@ class ApiOrderController extends BaseOrderController
 
         $filler->fillOrder($order, $recordRequest);
 
-        $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
+        $this->dispatch(new OrderEvent($order), PhraseaEvents::ORDER_CREATE);
 
         $view = $this->getViewBuilder()->buildView($order, []);
         $resource = new Item($view, $this->getOrderTransformer());
@@ -133,7 +133,7 @@ class ApiOrderController extends BaseOrderController
 
         $resource = new Collection($collection, $this->getOrderTransformer());
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($builder, false));
+        $pager = new Pagerfanta(new QueryAdapter($builder, false));
         $pager->setCurrentPage($page);
         $pager->setMaxPerPage($perPage);
 
@@ -213,8 +213,8 @@ class ApiOrderController extends BaseOrderController
         }
 
         $this->dispatch(
-            PhraseaEvents::EXPORT_CREATE,
-            new ExportEvent($user, $basket->getId(), implode(';', $lst), $subdefs, $exportName)
+            new ExportEvent($user, $basket->getId(), implode(';', $lst), $subdefs, $exportName),
+            PhraseaEvents::EXPORT_CREATE
         );
 
         set_time_limit(0);

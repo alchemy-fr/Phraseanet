@@ -6,10 +6,10 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailInfoOrderDeliveredTest extends MailTestCase
 {
     public function testSetBasket()
@@ -31,8 +31,8 @@ class MailInfoOrderDeliveredTest extends MailTestCase
             $this->getMessage()
         );
 
-        $basket = $this->getMock('Alchemy\Phrasea\Model\Entities\Basket');
-        $basket->expects($this->any())
+        $basket = $this->createMock('Alchemy\Phrasea\Model\Entities\Basket');
+        $basket
             ->method('getName')
             ->will($this->returnValue('Hello basket'));
 
@@ -57,7 +57,7 @@ class MailInfoOrderDeliveredTest extends MailTestCase
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 
@@ -80,17 +80,17 @@ class MailInfoOrderDeliveredTest extends MailTestCase
             $this->getMessage()
         );
 
-        $basket = $this->getMock('Alchemy\Phrasea\Model\Entities\Basket');
-        $basket->expects($this->any())
+        $basket = $this->createMock('Alchemy\Phrasea\Model\Entities\Basket');
+        $basket
             ->method('getName')
             ->will($this->returnValue('Hello basket'));
-        $basket->expects($this->any())
+        $basket
             ->method('getId')
             ->will($this->returnValue(42));
 
         $user = $this->createUserMock();
 
-        $user->expects($this->any())
+        $user
             ->method('getDisplayName')
             ->will($this->returnValue('JeanPhil'));
 

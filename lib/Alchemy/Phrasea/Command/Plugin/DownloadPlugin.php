@@ -15,7 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\ArrayInput;
-use Cz\Git\GitRepository as GitRepository;
+use CzProject\GitPhp\Git;
 
 class DownloadPlugin extends AbstractPluginCommand
 {
@@ -80,7 +80,6 @@ class DownloadPlugin extends AbstractPluginCommand
                     curl_setopt($ch, CURLOPT_FILE, $fp);
                     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                     curl_exec($ch);
-                    curl_close($ch);
                     fclose($fp);
 
                     // unpack
@@ -111,7 +110,7 @@ class DownloadPlugin extends AbstractPluginCommand
 
                 case 'git':
                     $output->writeln("Downloading <info>$source</info>...");
-                    $repo = GitRepository::cloneRepository($source, $localDownloadPath);
+                    $repo = (new Git())->cloneRepository($source, $localDownloadPath);
                     $output->writeln("Plugin downloaded to <info>$localDownloadPath</info>");
                     if ($shouldInstallPlugin) $this->doInstallPlugin($localDownloadPath, $input, $output);
                     break;

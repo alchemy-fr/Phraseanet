@@ -64,7 +64,7 @@ WHERE base_id = :baseId';
      */
     public function findAll()
     {
-        return $this->createManyReferences($this->connection->fetchAll(self::$selectQuery));
+        return $this->createManyReferences($this->connection->fetchAllAssociative(self::$selectQuery));
     }
 
     /**
@@ -74,7 +74,7 @@ WHERE base_id = :baseId';
     public function findAllByDatabox($databoxId)
     {
         $query = self::$selectQuery . ' WHERE sbas_id = :databoxId';
-        $rows = $this->connection->fetchAll($query, [ ':databoxId' => $databoxId ]);
+        $rows = $this->connection->fetchAllAssociative($query, [ ':databoxId' => $databoxId ]);
 
         return $this->createManyReferences($rows);
     }
@@ -86,7 +86,7 @@ WHERE base_id = :baseId';
     public function find($baseId)
     {
         $query = self::$selectQuery . ' WHERE base_id = :baseId';
-        $row = $this->connection->fetchAssoc($query, [ ':baseId' => $baseId ]);
+        $row = $this->connection->fetchAssociative($query, [ ':baseId' => $baseId ]);
 
         if ($row !== false) {
             return $this->createReference($row);
@@ -105,7 +105,7 @@ WHERE base_id = :baseId';
             return [];
         }
 
-        $rows = $this->connection->fetchAll(
+        $rows = $this->connection->fetchAllAssociative(
             self::$selectQuery . ' WHERE base_id IN (:baseIds)',
             ['baseIds' => $basesId],
             ['baseIds' => Connection::PARAM_INT_ARRAY]
@@ -122,7 +122,7 @@ WHERE base_id = :baseId';
     public function findByCollectionId($databoxId, $collectionId)
     {
         $query = self::$selectQuery . ' WHERE sbas_id = :databoxId AND server_coll_id = :collectionId';
-        $row = $this->connection->fetchAssoc($query, [ ':databoxId' => $databoxId, ':collectionId' => $collectionId ]);
+        $row = $this->connection->fetchAssociative($query, [ ':databoxId' => $databoxId, ':collectionId' => $collectionId ]);
 
         if ($row !== false) {
             return $this->createReference($row);
@@ -131,7 +131,7 @@ WHERE base_id = :baseId';
         return null;
     }
 
-    public function findHavingOrderMaster(array $baseIdsSubset = null)
+    public function findHavingOrderMaster(?array $baseIdsSubset = null)
     {
         $query = self::$selectQuery
             . ' WHERE EXISTS(SELECT 1 FROM basusr WHERE basusr.order_master = 1 AND basusr.base_id = bas.base_id)';
@@ -149,7 +149,7 @@ WHERE base_id = :baseId';
             $types['subset'] = Connection::PARAM_INT_ARRAY;
         }
 
-        $rows = $this->connection->fetchAll($query, $parameters, $types);
+        $rows = $this->connection->fetchAllAssociative($query, $parameters, $types);
 
         return $this->createManyReferences($rows);
     }
@@ -185,7 +185,7 @@ WHERE base_id = :baseId';
 
     /**
      * @param CollectionReference $collectionReference
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function delete(CollectionReference $collectionReference)
     {

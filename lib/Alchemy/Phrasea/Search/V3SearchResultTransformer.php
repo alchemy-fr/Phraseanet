@@ -15,8 +15,8 @@ use League\Fractal\TransformerAbstract;
 
 class V3SearchResultTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['results', 'suggestions', 'facets'];
-    protected $defaultIncludes = ['results'];
+    protected array $availableIncludes = ['results', 'suggestions', 'facets'];
+    protected array $defaultIncludes = ['results'];
 
     /**
      * @var TransformerAbstract

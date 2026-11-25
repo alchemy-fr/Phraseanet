@@ -6,15 +6,12 @@ use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Notification\Mail\MailInfoValidationReminder;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoValidationReminder
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailInfoValidationReminderTest extends MailWithLinkTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Notification\Mail\MailInfoValidationReminder::setTitle
-     */
     public function testSetTitle()
     {
         $this->assertEquals('Reminder : validate \'%title%\'', $this->getMail()->getSubject());

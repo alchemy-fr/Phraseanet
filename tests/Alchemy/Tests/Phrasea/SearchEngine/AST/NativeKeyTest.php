@@ -5,13 +5,12 @@ namespace Alchemy\Tests\Phrasea\SearchEngine\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\NativeKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 
-/**
- * @group unit
- * @group searchengine
- * @group ast
- */
-class NativeKeyTest extends \PHPUnit_Framework_TestCase
+#[\PHPUnit\Framework\Attributes\Group('unit')]
+#[\PHPUnit\Framework\Attributes\Group('searchengine')]
+#[\PHPUnit\Framework\Attributes\Group('ast')]
+class NativeKeyTest extends \PHPUnit\Framework\TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testSerialization()
     {
         $this->assertTrue(method_exists(NativeKey::class, '__toString'), 'Class does not have method __toString');
@@ -21,16 +20,14 @@ class NativeKeyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('record_identifier', (string) NativeKey::recordIdentifier());
     }
 
-    /**
-     * @dataProvider keyProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('keyProvider')]
     public function testGetIndexField($key, $field)
     {
         $query_context = $this->prophesize(QueryContext::class);
         $this->assertEquals($key->getIndexField($query_context->reveal()), $field);
     }
 
-    public function keyProvider()
+    public static function keyProvider()
     {
         return [
             [NativeKey::database(),         'databox_name'],

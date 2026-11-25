@@ -28,7 +28,7 @@ abstract class Command extends SymfoCommand implements CommandInterface
     /**
      * {@inheritdoc}
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_QUIET) {
             switch ($output->getVerbosity()) {
@@ -52,15 +52,13 @@ abstract class Command extends SymfoCommand implements CommandInterface
                 return $logger->pushHandler($handler);
             };
 
-            $this->container['monolog'] = $this->container->share(
-                $this->container->extend('monolog', $pushHandler)
-            );
-            $this->container['task-manager.logger'] = $this->container->share(
-                $this->container->extend('task-manager.logger', $pushHandler)
-            );
+            $this->container->extend('monolog', $pushHandler);
+            $this->container->extend('task-manager.logger', $pushHandler);
         }
 
-        return $this->doExecute($input, $output);
+        $statusCode = $this->doExecute($input, $output);
+
+        return is_numeric($statusCode) ? (int) $statusCode : self::SUCCESS;
     }
 
     abstract protected function doExecute(InputInterface $input, OutputInterface $output);

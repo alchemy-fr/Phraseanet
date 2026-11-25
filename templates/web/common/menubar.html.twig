@@ -86,10 +86,6 @@
                                     <li class="menu-bar-item">
                                         {% set link = path('upload_html5_form') %}
 
-                                        {% if not app['browser'].supportFileAPI() %}
-                                            {% set link = path('upload_flash_form') %}
-                                        {% endif %}
-
                                         <a href="{{ link }}" class="uploader-open-action"
                                            title="{{ 'Upload' | trans }}">
                                             <img src="/assets/common/images/icons/menu-upload.png" class="mobilemenu"/>
@@ -156,7 +152,7 @@
                                     {% endif %}
                                 </li>
                                 <li class="menu-bar-item">
-                                    <a href="{{ path('logout', { 'redirect' : '..' ~ app['request'].getPathInfo() }) }}"
+                                    <a href="{{ path('logout', { 'redirect' : '..' ~ app['request_stack'].currentRequest.getPathInfo() }) }}"
                                        target="_self">
                                         <img src="/assets/common/images/icons/menu-logout.png"/>
                                         <span>{{ 'phraseanet:: deconnection' | trans }}</span>
@@ -256,7 +252,7 @@
             </li>
             <li>
                 {% if app.getAuthenticator().isAuthenticated() %}
-                    <a href="{{ path('logout', { 'redirect' : '..' ~ app['request'].getPathInfo() }) }}" target="_self">
+                    <a href="{{ path('logout', { 'redirect' : '..' ~ app['request_stack'].currentRequest.getPathInfo() }) }}" target="_self">
             <span>
               {{ 'phraseanet:: deconnection' | trans }}
             </span>

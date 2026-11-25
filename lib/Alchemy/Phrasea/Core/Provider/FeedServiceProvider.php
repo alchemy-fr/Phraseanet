@@ -17,35 +17,35 @@ use Alchemy\Phrasea\Feed\Formatter\RssFormatter;
 use Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator;
 use Alchemy\Phrasea\Feed\Link\FeedLinkGenerator;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class FeedServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['feed.user-link-generator'] = $app->share(function ($app) {
+        $app['feed.user-link-generator'] = function ($app) {
             return new FeedLinkGenerator($app['url_generator'], $app['orm.em'], $app['random.low']);
-        });
-        $app['feed.aggregate-link-generator'] = $app->share(function ($app) {
+        };
+        $app['feed.aggregate-link-generator'] = function ($app) {
             return new AggregateLinkGenerator($app['url_generator'], $app['orm.em'], $app['random.medium']);
-        });
-        $app['feed.link-generator-collection'] = $app->share(function ($app) {
+        };
+        $app['feed.link-generator-collection'] = function ($app) {
             $collection = new LinkGeneratorCollection();
             $collection->pushGenerator($app['feed.user-link-generator']);
             $collection->pushGenerator($app['feed.aggregate-link-generator']);
 
             return $collection;
-        });
-        $app['feed.rss-formatter'] = $app->share(function ($app) {
+        };
+        $app['feed.rss-formatter'] = function ($app) {
             return new RssFormatter($app['feed.link-generator-collection']);
-        });
-        $app['feed.atom-formatter'] = $app->share(function ($app) {
+        };
+        $app['feed.atom-formatter'] = function ($app) {
             return new AtomFormatter($app['feed.link-generator-collection']);
-        });
-        $app['feed.cooliris-formatter'] = $app->share(function ($app) {
+        };
+        $app['feed.cooliris-formatter'] = function ($app) {
             return new CoolirisFormatter($app['feed.link-generator-collection']);
-        });
+        };
         $app['feed.formatter-strategy'] = $app->protect(function ($type) use ($app) {
             switch ($type) {
                 case 'rss':
@@ -61,9 +61,5 @@ class FeedServiceProvider implements ServiceProviderInterface
                     throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $type));
             }
         });
-    }
-
-    public function boot(Application $app)
-    {
     }
 }

@@ -109,12 +109,13 @@ class CreateRecordWorker implements WorkerInterface
             $this->messagePublisher->pushLog($workerMessage);
 
             //  send to retry queue
-            $this->dispatch(WorkerEvents::ASSETS_CREATION_RECORD_FAILURE, new AssetsCreationRecordFailureEvent(
+            $this->dispatch(new AssetsCreationRecordFailureEvent(
                 $payload,
                 $workerMessage,
                 $count,
                 $workerRunningJob->getId()
-            ));
+            ),
+            WorkerEvents::ASSETS_CREATION_RECORD_FAILURE);
 
             return;
         }
@@ -127,12 +128,13 @@ class CreateRecordWorker implements WorkerInterface
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             //  send to retry queue
-            $this->dispatch(WorkerEvents::ASSETS_CREATION_RECORD_FAILURE, new AssetsCreationRecordFailureEvent(
+            $this->dispatch(new AssetsCreationRecordFailureEvent(
                 $payload,
                 $workerMessage,
                 $count,
                 $workerRunningJob->getId()
-            ));
+            ),
+            WorkerEvents::ASSETS_CREATION_RECORD_FAILURE);
 
             return;
         }
@@ -215,11 +217,11 @@ class CreateRecordWorker implements WorkerInterface
 
         if ($elementCreated instanceof \record_adapter) {
             $this->messagePublisher->pushLog(sprintf("record created databoxname=%s databoxid=%d recordid=%d", $elementCreated->getDatabox()->get_viewname(), $elementCreated->getDataboxId(), $elementCreated->getRecordId()));
-            $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
+            $this->dispatch(new RecordEdit($elementCreated), PhraseaEvents::RECORD_UPLOAD);
         } else {
             $this->messagePublisher->pushLog(sprintf('The file was moved to the quarantine: %s', json_encode($reasons)));
             /** @var LazaretFile $elementCreated */
-            $this->dispatch(PhraseaEvents::LAZARET_CREATE, new LazaretEvent($elementCreated));
+            $this->dispatch(new LazaretEvent($elementCreated), PhraseaEvents::LAZARET_CREATE);
         }
 
         // add record in a story if story is defined
@@ -307,12 +309,12 @@ class CreateRecordWorker implements WorkerInterface
                 $story->set_metadatas($metadatas)->rebuild_subdefs();
 
                 // order to write meta in file
-                $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
-                    new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()));
+                $this->app['dispatcher']->dispatch(new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()),
+                    WorkerEvents::RECORDS_WRITE_META);
             }
 
             $this->messagePublisher->pushLog(sprintf('The record record_id= %d was successfully added in the story record_id= %d', $elementCreated->getRecordId(), $story->getRecordId()));
-            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescription));
+            $this->dispatch(new RecordEdit($story, $previousDescription), PhraseaEvents::RECORD_EDIT);
         }
     }
 

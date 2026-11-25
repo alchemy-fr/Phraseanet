@@ -1,7 +1,7 @@
 <?php
 
 use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Bridge_Api_Apitest_Containers implements Bridge_Api_ContainerInterface
 {

@@ -4,27 +4,22 @@ namespace Alchemy\Tests\Phrasea\Controller\Root;
 
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 
-/**
- * @group functional
- * @group legacy
- * @group authenticated
- * @group web
- */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Developers::class, 'listApps')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Developers::class, 'displayFormApp')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\Alchemy\Phrasea\Controller\Root\Developers::class, 'newApp')]
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
+#[\PHPUnit\Framework\Attributes\Group('authenticated')]
+#[\PHPUnit\Framework\Attributes\Group('web')]
 class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
 {
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Developers::listApps
-     */
     public function testListApps()
     {
         self::$DI['client']->request('GET', '/developers/applications/');
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Developers::displayFormApp
-     */
     public function testDisplayformApp()
     {
         $crawler = self::$DI['client']->request('GET', '/developers/application/new/');
@@ -34,9 +29,6 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('POST', $form->getMethod());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Developers::newApp
-     */
     public function testPostNewAppInvalidArguments()
     {
         $randomValue = $this->setSessionFormToken('newApplication');
@@ -59,9 +51,6 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('my.callback.com', $form['callback']->getValue());
     }
 
-    /**
-     * @covers \Alchemy\Phrasea\Controller\Root\Developers::newApp
-     */
     public function testPostNewApp()
     {
         $apps = self::$DI['app']['repo.api-applications']->findByCreator(self::$DI['user']);

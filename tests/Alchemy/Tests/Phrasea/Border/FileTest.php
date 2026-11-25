@@ -9,18 +9,15 @@ use Alchemy\Phrasea\Media\Type\Document;
 use Alchemy\Phrasea\Media\Type\Flash;
 use Alchemy\Phrasea\Media\Type\Image;
 use Alchemy\Phrasea\Media\Type\Video;
+use Alchemy\Phrasea\Metadata\TagFactory;
 use MediaVorus\Media\MediaInterface;
 use PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
-use PHPExiftool\Driver\Tag\IPTC\Keywords;
-use PHPExiftool\Driver\Tag\MXF\ObjectName;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Value\Multi;
 use Ramsey\Uuid\Uuid;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class FileTest extends \PhraseanetTestCase
 {
     /**
@@ -30,10 +27,7 @@ class FileTest extends \PhraseanetTestCase
     protected $filename;
     protected $media;
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::__construct
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->filename = __DIR__ . '/../../../../../tmp/iphone_pic.jpg';
@@ -44,10 +38,7 @@ class FileTest extends \PhraseanetTestCase
         $this->object = new File(self::$DI['app'], $this->media, self::$DI['collection'], 'originalName.txt');
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::__destruct
-     */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->object = null;
         if (file_exists($this->filename)) {
@@ -56,17 +47,11 @@ class FileTest extends \PhraseanetTestCase
         parent::tearDown();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getUUID
-     */
     public function testGetUuid()
     {
         $this->assertEquals('4d006e01-bc38-4aac-9a5b-2c90ffe3a8a2', $this->object->getUUID());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getUUID
-     */
     public function testNewUuid()
     {
         $file = __DIR__ . '/../../../../files/temporay.jpg';
@@ -102,78 +87,51 @@ class FileTest extends \PhraseanetTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getSha256
-     */
     public function testGetSha256()
     {
         $this->assertEquals('a7f3ec01c4c5efcadc639d494d432006f13b28b9a576afaee4d3b7508c4be074', $this->object->getSha256());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getMD5
-     */
     public function testGetMD5()
     {
         $this->assertEquals('db0d69df2fc9e5e82e42d174f2bbb62f', $this->object->getMD5());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getFile
-     */
     public function testGetFile()
     {
         $this->assertInstanceOf('\\MediaVorus\\File', $this->object->getFile());
         $this->assertEquals(realpath(__DIR__ . '/../../../../../tmp/iphone_pic.jpg'), $this->object->getFile()->getRealPath());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getMedia
-     */
     public function testGetMedia()
     {
         $this->assertInstanceof('\\MediaVorus\\Media\\Image', $this->object->getMedia());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getCollection
-     */
     public function testGetCollection()
     {
         $this->assertSame(self::$DI['collection'], $this->object->getCollection());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getOriginalName
-     */
     public function testOriginalName()
     {
         $this->assertSame('originalName.txt', $this->object->getOriginalName());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getOriginalName
-     */
     public function testOriginalNameAuto()
     {
         $object = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($this->filename), self::$DI['collection']);
         $this->assertSame('iphone_pic.jpg', $object->getOriginalName());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getAttributes
-     */
     public function testGetAttributes()
     {
         $this->assertSame([], $this->object->getAttributes());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::addAttribute
-     */
     public function testAddAttribute()
     {
-        $tag = new ObjectName();
+        $tag = TagFactory::getFromRDFTagname('MXF:ObjectName');
         $value = new Mono('Object name');
 
         $metadata1 = new PHPExiftoolMetadata($tag, $value);
@@ -182,7 +140,7 @@ class FileTest extends \PhraseanetTestCase
         $this->object->addAttribute($attribute1);
         $this->assertSame([$attribute1], $this->object->getAttributes());
 
-        $tag = new Keywords();
+        $tag = TagFactory::getFromRDFTagname('IPTC:Keywords');
         $value = new Multi(['Later', 'Alligator']);
 
         $metadata2 = new PHPExiftoolMetadata($tag, $value);
@@ -192,9 +150,6 @@ class FileTest extends \PhraseanetTestCase
         $this->assertSame([$attribute1, $attribute2], $this->object->getAttributes());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::buildFromPathfile
-     */
     public function testBuildFromPathfile()
     {
         $media = self::$DI['app']['mediavorus']->guess($this->filename);
@@ -218,20 +173,15 @@ class FileTest extends \PhraseanetTestCase
         $this->assertEquals($file1->getOriginalName(), $file2->getOriginalName());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::buildFromPathfile
-     * @expectedException \InvalidArgumentException
-     */
     public function testBuildFromWrongPathfile()
     {
+        $this->expectException(\InvalidArgumentException::class);
         File::buildFromPathfile('unexistent.file', self::$DI['collection'], self::$DI['app']);
     }
 
     private function getMediaMock($type)
     {
-        $mock = $this->getMockBuilder('\\MediaVorus\\Media\\Image')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mock = $this->createMock('\\MediaVorus\\Media\\Image');
 
         $mock->expects($this->once())
             ->method('getType')
@@ -240,9 +190,6 @@ class FileTest extends \PhraseanetTestCase
         return $mock;
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getType
-     */
     public function testGetTypeImage()
     {
         $image = $this->getMediaMock(MediaInterface::TYPE_IMAGE);
@@ -252,9 +199,6 @@ class FileTest extends \PhraseanetTestCase
         $this->assertEquals(new Image(), $file->getType());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getType
-     */
     public function testGetTypeDocument()
     {
         $document = $this->getMediaMock(MediaInterface::TYPE_DOCUMENT);
@@ -264,9 +208,6 @@ class FileTest extends \PhraseanetTestCase
         $this->assertEquals(new Document(), $file->getType());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getType
-     */
     public function testGetTypeAudio()
     {
         $audio = $this->getMediaMock(MediaInterface::TYPE_AUDIO);
@@ -276,9 +217,6 @@ class FileTest extends \PhraseanetTestCase
         $this->assertEquals(new Audio(), $file->getType());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getType
-     */
     public function testGetTypeVideo()
     {
         $video = $this->getMediaMock(MediaInterface::TYPE_VIDEO);
@@ -288,9 +226,6 @@ class FileTest extends \PhraseanetTestCase
         $this->assertEquals(new Video(), $file->getType());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getType
-     */
     public function testGetTypeFlash()
     {
         $flash = $this->getMediaMock(MediaInterface::TYPE_FLASH);
@@ -300,9 +235,6 @@ class FileTest extends \PhraseanetTestCase
         $this->assertEquals(new Flash(), $file->getType());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\File::getType
-     */
     public function testGetTypeNoType()
     {
         $noType = $this->getMediaMock(null);

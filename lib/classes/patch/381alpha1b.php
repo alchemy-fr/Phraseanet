@@ -49,10 +49,8 @@ class patch_381alpha1b extends patchAbstract
     public function apply(base $databox, Application $app)
     {
         $sql = "SHOW INDEX FROM metadatas_structure WHERE KEY_NAME = 'sorter'";
-        $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $stmt = $databox->get_connection()->executeQuery($sql);
+        $rows = $stmt->fetchAllAssociative();
 
         if (count($rows) === 0) {
             return true;
@@ -60,8 +58,7 @@ class patch_381alpha1b extends patchAbstract
 
         $sql = "DROP INDEX sorter ON  metadatas_structure";
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
+        $stmt->executeStatement();
 
         return true;
     }

@@ -5,57 +5,47 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="ApiOauthCodes", indexes={@ORM\Index(name="api_oauth_code_account_id", columns={"account_id"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiOauthCodeRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\ApiOauthCodeRepository::class)]
+#[ORM\Table(name: 'ApiOauthCodes')]
+#[ORM\Index(name: 'api_oauth_code_account_id', columns: ['account_id'])]
 class ApiOauthCode
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="code", type="string", length=128, nullable=false)
-     * @ORM\Id
      */
+    #[ORM\Column(name: 'code', type: 'string', length: 128, nullable: false)]
+    #[ORM\Id]
     private $code;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ApiAccount")
-     * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=false)
      *
      * @return ApiAccount
      **/
+    #[ORM\ManyToOne(targetEntity: ApiAccount::class)]
+    #[ORM\JoinColumn(name: 'account_id', referencedColumnName: 'id', nullable: false)]
     private $account;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="redirect_uri", type="string", length=128, nullable=false)
      */
+    #[ORM\Column(name: 'redirect_uri', type: 'string', length: 128, nullable: false)]
     private $redirectUri;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $expires;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=128, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $scope;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**

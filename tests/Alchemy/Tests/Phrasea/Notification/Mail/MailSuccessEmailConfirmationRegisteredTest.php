@@ -5,10 +5,10 @@ namespace Alchemy\Tests\Phrasea\Notification\Mail;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
 
 /**
- * @group functional
- * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered
  */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class MailSuccessEmailConfirmationRegisteredTest extends MailWithLinkTestCase
 {
     public function getMail()

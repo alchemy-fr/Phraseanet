@@ -61,7 +61,7 @@ trait NotifierAware
      * @param array         $attachments
      * @return int
      */
-    public function deliver(MailInterface $mail, $readReceipt = false, array $attachments = null)
+    public function deliver(MailInterface $mail, $readReceipt = false, ?array $attachments = null)
     {
         return $this->getDeliverer()->deliver($mail, $readReceipt, $attachments);
     }

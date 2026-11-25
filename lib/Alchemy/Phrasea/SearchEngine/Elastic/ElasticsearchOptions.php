@@ -11,7 +11,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use databox_field;
 use igorw;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 class ElasticsearchOptions
@@ -313,7 +313,7 @@ class ElasticsearchOptions
         $this->_customValues = igorw\assoc_in($this->_customValues, $keys, $value);
     }
 
-    public static function getAggregableTechnicalFields(TranslatorInterface $translator)
+    public static function getAggregableTechnicalFields(\Symfony\Contracts\Translation\TranslatorInterface $translator)
     {
         return [
             '_base' => [

@@ -14,40 +14,29 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="SessionModules", uniqueConstraints={@ORM\UniqueConstraint(name="unique_module", columns={"session_id", "module_id"})})
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\SessionModuleRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\SessionModuleRepository::class)]
+#[ORM\Table(name: 'SessionModules')]
+#[ORM\UniqueConstraint(name: 'unique_module', columns: ['session_id', 'module_id'])]
 class SessionModule
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $module_id;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Session", inversedBy="modules", cascade={"persist"})
-     * @ORM\JoinColumn(name="session_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: Session::class, inversedBy: 'modules', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'session_id', referencedColumnName: 'id')]
     private $session;
 
     /**
@@ -135,7 +124,7 @@ class SessionModule
      * @param  Session       $session
      * @return SessionModule
      */
-    public function setSession(Session $session = null)
+    public function setSession(?Session $session = null)
     {
         $this->session = $session;
 

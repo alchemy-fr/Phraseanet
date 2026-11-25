@@ -171,7 +171,7 @@ class WebhookRecordEventSubscriber implements EventSubscriberInterface
     /**
      * @inheritDoc
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             RecordEvents::CREATED               =>       'onRecordCreated',             /** @uses onRecordCreated */

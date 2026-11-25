@@ -5,22 +5,20 @@ namespace Alchemy\Tests\Phrasea\Command\Task;
 use Alchemy\Phrasea\Command\Task\TaskState;
 use Alchemy\Phrasea\Model\Entities\Task;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TaskStateTest extends \PhraseanetTestCase
 {
     public function testRunWithoutProblems()
     {
-        $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
-        $output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
+        $input = $this->createMock('Symfony\Component\Console\Input\InputInterface');
+        $output = $this->createStub('Symfony\Component\Console\Output\OutputInterface');
 
-        self::$DI['cli']['monolog'] = self::$DI['cli']->share(function () {
+        self::$DI['cli']['monolog'] = function () {
             return $this->createMonologMock();
-        });
+        };
 
-        $input->expects($this->any())
+        $input
                 ->method('getArgument')
                 ->with('task_id')
                 ->will($this->returnValue(1));

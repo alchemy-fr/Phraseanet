@@ -4,10 +4,8 @@ namespace Alchemy\Tests\Phrasea\Plugin;
 
 use Alchemy\Phrasea\Plugin\Schema\ManifestValidator;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class PluginTestCase extends \PhraseanetTestCase
 {
     protected function createManifestValidator()
@@ -22,7 +20,7 @@ class PluginTestCase extends \PhraseanetTestCase
 
     protected function createFilesystemMock()
     {
-        return $this->getMock('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem');
+        return $this->createMock('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem');
     }
 
     protected function getSchema()
@@ -37,8 +35,6 @@ class PluginTestCase extends \PhraseanetTestCase
 
     protected function createManifestMock()
     {
-        return $this->getMockBuilder('Alchemy\Phrasea\Plugin\Schema\Manifest')
-            ->disableOriginalConstructor()
-            ->getMock();
+        return $this->createMock('Alchemy\Phrasea\Plugin\Schema\Manifest');
     }
 }

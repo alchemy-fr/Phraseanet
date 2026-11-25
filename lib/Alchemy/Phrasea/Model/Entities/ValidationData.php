@@ -14,43 +14,29 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="ValidationDatas")
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'ValidationDatas')]
 class ValidationData
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     private $id;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private $agreement;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $note;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true, name="participant_id")
-     */
+    #[ORM\Column(type: 'integer', nullable: true, name: 'participant_id')]
     private $participant;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true, name="basket_element_id")
-     */
+    #[ORM\Column(type: 'integer', nullable: true, name: 'basket_element_id')]
     private $basket_element;
 
     /**
@@ -138,7 +124,7 @@ class ValidationData
      * @param  ValidationParticipant $participant
      * @return ValidationData
      */
-    public function setParticipant(ValidationParticipant $participant = null)
+    public function setParticipant(?ValidationParticipant $participant = null)
     {
         $this->participant = $participant;
 
@@ -161,7 +147,7 @@ class ValidationData
      * @param  BasketElement  $basketElement
      * @return ValidationData
      */
-    public function setBasketElement(BasketElement $basketElement = null)
+    public function setBasketElement(?BasketElement $basketElement = null)
     {
         $this->basket_element = $basketElement;
 

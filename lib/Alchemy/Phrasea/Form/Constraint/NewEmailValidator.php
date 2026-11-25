@@ -13,14 +13,19 @@ namespace Alchemy\Phrasea\Form\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class NewEmailValidator extends ConstraintValidator
 {
     /**
      * {@inheritDoc}
      */
-    public function validate($value, Constraint $constraint)
+    public function validate(mixed $value, Constraint $constraint): void
     {
+        if (!$constraint instanceof NewEmail) {
+            throw new UnexpectedTypeException($constraint, NewEmail::class);
+        }
+
         if ($constraint->isAlreadyRegistered($value)) {
             $this->context->addViolation($constraint->message);
         }

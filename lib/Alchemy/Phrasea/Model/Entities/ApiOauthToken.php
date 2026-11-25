@@ -5,64 +5,49 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Table(name="ApiOauthTokens", indexes={
- *      @ORM\Index(name="api_oauth_token_account_id", columns={"account_id"}),
- *      @ORM\Index(name="api_oauth_token_session_id", columns={"session_id"})
- * })
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository")
- */
+#[ORM\Entity(repositoryClass: \Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository::class)]
+#[ORM\Table(name: 'ApiOauthTokens')]
+#[ORM\Index(name: 'api_oauth_token_account_id', columns: ['account_id'])]
+#[ORM\Index(name: 'api_oauth_token_session_id', columns: ['session_id'])]
 class ApiOauthToken
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="oauth_token", type="string", length=128, nullable=false)
-     * @ORM\Id
      */
+    #[ORM\Column(name: 'oauth_token', type: 'string', length: 128, nullable: false)]
+    #[ORM\Id]
     private $oauthToken;
 
-    /**
-     * @ORM\Column(name="session_id", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'session_id', type: 'integer', nullable: true)]
     private $sessionId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ApiAccount", inversedBy="tokens")
-     * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=false)
      *
      * @return ApiAccount
      **/
+    #[ORM\ManyToOne(targetEntity: ApiAccount::class, inversedBy: 'tokens')]
+    #[ORM\JoinColumn(name: 'account_id', referencedColumnName: 'id', nullable: false)]
     private $account;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $expires;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="last_used")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime', name: 'last_used')]
     private $lastUsed;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=128, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private $scope;
 
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
     private $created;
 
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
     private $updated;
 
     /**

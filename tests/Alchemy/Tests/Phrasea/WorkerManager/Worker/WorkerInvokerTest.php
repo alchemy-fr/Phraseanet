@@ -11,6 +11,7 @@ use Symfony\Component\Process\Process;
 
 class WorkerInvokerTest extends \PhraseanetTestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testClassImplements()
     {
         $processPool = $this->prophesize(ProcessPool::class);
@@ -22,24 +23,18 @@ class WorkerInvokerTest extends \PhraseanetTestCase
 
     public function testInvokeWorkerSuccess()
     {
-        $process = $this->getMockBuilder(Process::class)
-            ->disableOriginalConstructor()
-            ->getMock()
+        $process = $this->createMock(Process::class)
         ;
 
         $process ->expects($this->exactly(1))
             ->method('start')
         ;
 
-        $processPool = $this->getMockBuilder(ProcessPool::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $processPool = $this->createMock(ProcessPool::class);
 
         $processPool->method('getWorkerProcess')->will($this->returnValue($process));
 
-        $channel = $this->getMockBuilder(AMQPChannel::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $channel = $this->createStub(AMQPChannel::class);
 
         $sut = new WorkerInvoker($processPool);
 
@@ -48,9 +43,7 @@ class WorkerInvokerTest extends \PhraseanetTestCase
 
     public function testInvokeWorkerWhenThrowException()
     {
-        $process = $this->getMockBuilder(Process::class)
-            ->disableOriginalConstructor()
-            ->getMock()
+        $process = $this->createMock(Process::class)
         ;
 
         $process ->expects($this->exactly(1))
@@ -58,15 +51,11 @@ class WorkerInvokerTest extends \PhraseanetTestCase
             ->will($this->throwException(new ProcessRuntimeException()))
         ;
 
-        $processPool = $this->getMockBuilder(ProcessPool::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $processPool = $this->createMock(ProcessPool::class);
 
         $processPool->method('getWorkerProcess')->will($this->returnValue($process));
 
-        $channel = $this->getMockBuilder(AMQPChannel::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $channel = $this->createStub(AMQPChannel::class);
 
         $sut = new WorkerInvoker($processPool);
 

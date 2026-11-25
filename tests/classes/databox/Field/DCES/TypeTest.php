@@ -1,12 +1,10 @@
 <?php
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class databox_Field_DCES_TypeTest extends databox_Field_DCES_DCESTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new databox_Field_DCES_Type;

@@ -193,8 +193,7 @@ class BuildPermalinks extends Command
             }
             $sqlCount = "SELECT COUNT(*) AS n FROM " . $s;
             $stmt = $this->connection->executeQuery($sqlCount);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $row = $stmt->fetchAssociative();
             $output->writeln(sprintf("%d permalinks to be deleted", $row['n']));
 
             if($this->dry) {
@@ -225,8 +224,7 @@ class BuildPermalinks extends Command
             }
             $sqlCount = "SELECT COUNT(*) AS n FROM " . $s;
             $stmt = $this->connection->executeQuery($sqlCount);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $row = $stmt->fetchAssociative();
             $output->writeln(sprintf("%d permalinks to be deleted", $row['n']));
 
             if($this->dry) {
@@ -264,8 +262,7 @@ class BuildPermalinks extends Command
             }
             $sqlCount = "SELECT COUNT(*) AS n FROM " . $s;
             $stmt = $this->connection->executeQuery($sqlCount);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $row = $stmt->fetchAssociative();
             $output->writeln(sprintf("%d permalinks to be created", $row['n']));
             if ($this->dry) {
                 $output->writeln(sprintf("dry : not executed"));
@@ -277,7 +274,7 @@ class BuildPermalinks extends Command
                 $n_created = 0;
                 $lmax = 0;  // max length of msg (displayed on same line), useful to clear the line after run
                 $app = $this->getContainer();
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                while ($row = $stmt->fetchAssociative()) {
                     $record_id = $row['record_id'];
                     $subdef_ids = $row['subdef_ids'];
 
@@ -313,7 +310,6 @@ class BuildPermalinks extends Command
                     }
 
                 }
-                $stmt->closeCursor();
 
                 $output->write(str_repeat(' ', $lmax) . "\r");    // clear the line
                 $duration = max(.000001, $duration);  // avoid division by 0 (anyway n_created is 0 in this case)

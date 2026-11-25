@@ -120,7 +120,6 @@ class ReflectionHydrator implements Hydrator
 
         foreach ($this->properties as $name) {
             $property = $class->getProperty($name);
-            $property->setAccessible(true);
 
             $properties[$name] = $property;
         }

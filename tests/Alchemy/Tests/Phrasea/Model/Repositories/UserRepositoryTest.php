@@ -4,28 +4,26 @@ namespace Alchemy\Tests\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\User;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class UserRepositoryTest extends \PhraseanetTestCase
 {
     public function testFindAdminsWithNoAdmins()
     {
-        $users = self::$DI['app']['orm.em']->getRepository('Phraseanet:User')->findAdmins();
+        $users = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findAdmins();
         $this->assertEquals(2, count($users));
     }
 
     public function testFindByLogin()
     {
-        $user = self::$DI['app']['orm.em']->getRepository('Phraseanet:User')->findByLogin('user1');
+        $user = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findByLogin('user1');
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
-        $this->assertNull(self::$DI['app']['orm.em']->getRepository('Phraseanet:User')->findByLogin('wrong-login'));
+        $this->assertNull(self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findByLogin('wrong-login'));
     }
 
     public function testFindUserByEmail()
     {
-        $user = self::$DI['app']['orm.em']->getRepository('Phraseanet:User')->findByEmail('user2@phraseanet.com');
+        $user = self::$DI['app']['orm.em']->getRepository('Alchemy\Phrasea\Model\Entities\User')->findByEmail('user2@phraseanet.com');
         $this->assertInstanceOf('Alchemy\Phrasea\Model\Entities\User', $user);
     }
 }

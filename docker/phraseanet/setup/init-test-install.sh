@@ -9,11 +9,21 @@ php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 composer install --ignore-platform-reqs --no-interaction
 
 FILE=config/configuration.yml
+MAX_INSTALL_ATTEMPTS=3
+attempt=0
 
+# A failed install rolls back and deletes the configuration file, so it can be retried.
+# The "|| ..." keeps "set -e" from aborting the script on the first failure.
 while [[ ! -e "$FILE" ]]
 do
+attempt=$((attempt + 1))
+if [[ $attempt -gt $MAX_INSTALL_ATTEMPTS ]]; then
+    echo "system:install failed after $MAX_INSTALL_ATTEMPTS attempts" >&2
+    exit 1
+fi
 sleep 10
-/var/alchemy/Phraseanet/bin/setup system:install \
+echo "system:install attempt $attempt/$MAX_INSTALL_ATTEMPTS"
+/var/alchemy/Phraseanet/bin/setup system:install -vvv \
     --email=test@test.fr \
     --password=test \
     --db-host=db \
@@ -28,7 +38,8 @@ sleep 10
     --lazaret-path=$PHRASEANET_LAZARET_DIR \
     --caption-path=$PHRASEANET_CAPTION_DIR \
     --worker-tmp-files=$PHRASEANET_WORKER_TMP \
-    --data-path=/var/alchemy/Phraseanet/datas -f
+    --data-path=/var/alchemy/Phraseanet/datas -f \
+    || echo "system:install attempt $attempt failed" >&2
 done
 
 /var/alchemy/Phraseanet/bin/setup system:config set workers.queue.worker-queue.registry alchemy_worker.queue_registry

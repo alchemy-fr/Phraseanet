@@ -6,42 +6,30 @@ use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Checker\Response;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class ResponseTest extends \PhraseanetTestCase
 {
     use TranslatorMockTrait;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $mock;
     /** @var Response */
     protected $object;
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Response::__construct
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
-        $this->mock = $this->getMock(CheckerInterface::class);
+        $this->mock = $this->createMock(CheckerInterface::class);
         $this->object = new Response(true, $this->mock);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Response::__destruct
-     */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->mock = $this->object = null;
         parent::tearDown();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
-     * @covers Alchemy\Phrasea\Border\Checker\Response::isOk
-     */
     public function testIsOk()
     {
         $this->assertTrue($this->object->isOk());
@@ -50,22 +38,14 @@ class ResponseTest extends \PhraseanetTestCase
         $this->assertFalse($this->object->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\CheckerInterface
-     * @covers Alchemy\Phrasea\Border\Checker\Response::getChecker
-     */
     public function testGetCheck()
     {
         $this->assertSame($this->mock, $this->object->getChecker());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Border\Checker\Response::getMessage
-     */
     public function testGetMessage()
     {
         $this->mock
-            ->expects($this->any())
             ->method('getMessage')
             ->will($this->returnValue('Hello World'));
 

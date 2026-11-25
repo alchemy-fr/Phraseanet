@@ -30,7 +30,7 @@ class ValidationParticipantRepository extends EntityRepository
      * @return ValidationParticipant[]
      * @throws \Exception
      */
-    public function findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($timeLeftPercent, DateTime $today=null)
+    public function findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($timeLeftPercent, ?DateTime $today=null)
     {
         $rsm = new ResultSetMappingBuilder($this->_em);
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\ValidationParticipant', 'p');
@@ -72,7 +72,7 @@ class ValidationParticipantRepository extends EntityRepository
         $q->setParameter('percent', (float)($timeLeftPercent/100));
 
         if($today !== null) {
-            $q->setParameter('today', $today, Type::DATETIME);
+            $q->setParameter('today', $today, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE);
         }
 
         return $q->getResult();

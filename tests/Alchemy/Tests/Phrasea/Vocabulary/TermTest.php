@@ -5,10 +5,8 @@ namespace Alchemy\Tests\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\Term;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
 
-/**
- * @group functional
- * @group legacy
- */
+#[\PHPUnit\Framework\Attributes\Group('functional')]
+#[\PHPUnit\Framework\Attributes\Group('legacy')]
 class TermTest extends \PhraseanetTestCase
 {
     /**
@@ -34,7 +32,7 @@ class TermTest extends \PhraseanetTestCase
     protected $control;
     protected $id = 25;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->control = new UserProvider(self::$DI['app']);
