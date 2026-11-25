@@ -1,5 +1,85 @@
 # CHANGELOG
 
+## 4.2.0
+
+### Version Summary
+
+Major platform upgrade: Phraseanet now runs on **PHP 8.5** with an up-to-date framework stack. This release contains breaking changes for plugins and custom code, see **Update Instructions** below.
+
+- **Platform migration** (PHP 7.0 → 8.5):
+  - Silex 1 → Silex 2 / Pimple 3 (maintained fork `alchemy/silex` 3.0), Symfony 7.4, Twig 3
+  - Doctrine DBAL 3, Doctrine Migrations 3, Doctrine ORM 2.20
+  - Guzzle 3/6 → Guzzle 7, PHPUnit 11
+  - media libraries forks: phpexiftool 4, php-ffmpeg 1.4, imagine 1.5
+  - Docker images rebuilt on `alchemyfr/phraseanet-base:2.0.0` (PHP 8.5)
+
+- **Security**
+  - PHRAS-4193: fix an unauthenticated remote code execution through the internal `/_fragment` route (YesWeHack #YWH-PGM6818-139). The HTTP fragment provider is no longer registered, nginx blocks `/_fragment` and strips the `X-Original-URL` / `X-Rewrite-URL` headers.
+  - PHRAS-4195: nginx upgraded to 1.31.9 (NGINX2Root vulnerabilities: CVE-2026-123007, CVE-2026-123633, CVE-2026-123634, CVE-2026-121810, CVE-2026-113425).
+  - The modify right is now required by Prod tools record actions, the Prod rotate tool and the API V1 story edition.
+  - Escape the feed entry subtitle and the lightbox feed title (XSS).
+
+- **New features**
+  - PHRAS-4197: new **"API access"** right. Only users holding it (or administrators) can open Account > Developers to create API applications and tokens. Existing tokens keep working. The right is granted or revoked per user in Admin > Users > API tab.
+  - SAML service provider container upgraded to **SimpleSAMLphp 2.5**. Its configuration now lives in the Phraseanet config dir, and sessions are stored in Redis.
+  - End-to-end test suite (Cypress) run in Docker (`docker-compose.cypress.yml`).
+
+- **Removed**
+  - Flash uploader: the HTML5 uploader is always used.
+
+- **Bug fixes**
+  - Workers stuck on a half-open MySQL socket (edits not visible)
+  - Worker queue permanently frozen by a hung child process (600 s limit and process reaping)
+  - Infinite requeue loop on an orphaned subdefinition worker lock
+  - PHRAS-4194: clearing a mono-valued field through metadata actions aborted the whole batch
+  - HTTP 500 errors: download (session), Admin search engine page, API V1 record DELETE, API V2 `/orders/`, removal of a feed publisher
+  - Embed returns 404 instead of 500 when the url is not a routable resource
+  - Prod tools metadata tab when an exiftool query has no value
+  - Worker manager general settings rendering
+  - Empty lightbox filmstrip thumbnails
+  - Substitution icons for OOXML (xlsx/docx/pptx) files
+
+### Update Instructions
+
+**Breaking changes: plugins and custom code**
+
+- PHP **8.5** is required.
+- Plugins must be compatible with Silex 2 / Pimple 3 (service providers), Twig 3 (templates) and Doctrine DBAL 3 (statement API). Plugins built for 4.1 must be updated before upgrading.
+- A plugin whose manifest declares `maximum-phraseanet-version` lower than or equal to `4.2` is rejected (the maximum is exclusive).
+
+**API access right**
+
+The upgrade patch grants the new "API access" right to every administrator and to every owner of an existing API application, so nobody loses access to the Developers area. The accounts granted are written to the log at the end of the patch: review them after the upgrade.
+
+#### Phraseanet Upgrade
+
+- **Phraseanet Migration Patch**:
+  - A migration script for the configuration file and the databases is available. Run the following command in the setup container with Docker if the environment variable `PHRASEANET_UPGRADE=1` is set:
+    ```
+    bin/setup system:upgrade
+    ```
+
+### Stack (Docker Compose and Helm)
+
+- **Base image**: `alchemyfr/phraseanet-base` 1.4.0 → 2.0.0 (PHP 8.5)
+- **nginx**: 1.27.2 → 1.31.9, `/_fragment` blocked and `X-Original-URL` / `X-Rewrite-URL` headers stripped
+- **SAML SP** (`phraseanet-saml-sp`): rebuilt on `php:8.5-fpm-trixie` with SimpleSAMLphp 2.5. Its `config.php` is generated only if it does not exist yet.
+  - Directories moved to the Phraseanet config dir:
+    - `SAML_SP_CONFIG_DIR=./config/plugins/saml-authentication/`
+    - `SAML_SP_CERT_DIR=./config/plugins/saml-authentication/cert/`
+    - `SAML_IDP_METADATA_LOCAL_CONFIG_DIR=./config/plugins/saml-authentication/metadata/`
+  - New variables:
+    - `SAML_SECRET_SALT`: random value generated if empty
+    - `SAML_ADMIN_PASSWORD`: random value generated if empty
+    - `SAML_REDIS_HOST` / `SAML_REDIS_PORT`: SAML sessions in Redis, `redis-session` by default
+- **Entrypoints**: the fpm and worker containers now handle the plugin initialization and `chown` races at startup.
+- **New**: `docker-compose.cypress.yml` for the end-to-end tests.
+
+
+**Full Changelog**: https://github.com/alchemy-fr/Phraseanet/compare/4.1.26...4.2.0
+
+__
+
 ## 4.1.26
 
 ## Version Summary
