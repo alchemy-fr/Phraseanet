@@ -11,7 +11,6 @@ use Alchemy\Phrasea\Core\Provider\SessionHandlerServiceProvider;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
@@ -26,7 +25,8 @@ class HttpStackMetaProvider implements ServiceProviderInterface
             throw new \LogicException('Expected an instance Alchemy\Phrasea\Application');
         }
 
-        $app->register(new HttpFragmentServiceProvider());
+        // HttpFragmentServiceProvider must not be registered: its /_fragment listener lets anyone holding
+        // the (predictable) uri_signer secret dispatch an arbitrary _controller, including PHP functions.
 
         $this->setupRequestContext($app);
 
