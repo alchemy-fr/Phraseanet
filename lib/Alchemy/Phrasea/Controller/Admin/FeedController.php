@@ -236,6 +236,8 @@ class FeedController extends Controller
      * @return Response
      */
     public function removePublisherAction(Request $request, $id) {
+        $error = '';
+
         try {
             $feed = $this->getFeedRepository()->find($id);
 
