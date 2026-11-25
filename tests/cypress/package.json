@@ -1,0 +1,13 @@
+{
+  "name": "phraseanet-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cypress end-to-end tests covering the features listed in FONCTIONNALITES_PHRASEANET.md",
+  "scripts": {
+    "cy:open": "./scripts/local.sh open",
+    "cy:run": "./scripts/local.sh run"
+  },
+  "devDependencies": {
+    "cypress": "16.3.0"
+  }
+}
