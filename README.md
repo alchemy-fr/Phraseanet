@@ -1,4 +1,4 @@
-Phraseanet 4.1 - Digital Asset Management application
+Phraseanet 4.2 - Digital Asset Management application
 =====================================================
 
 [![CI](https://github.com/alchemy-fr/Phraseanet/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alchemy-fr/Phraseanet/actions/workflows/ci.yml)
@@ -51,7 +51,7 @@ Phraseanet is licensed under GPL-v3 license.
 
 https://docs.phraseanet.com/
 
-For development with Phraseanet API, see https://docs.phraseanet.com/4.1/en/Devel/index.html
+For development with Phraseanet API, see https://docs.phraseanet.com/4.2/en/Devel/index.html
 
 
 # Installation and Quick Launch:
@@ -97,7 +97,7 @@ Default see Phraseanet credentials defined in .env file.
 For installation on your own mono-tenant or multi-tenant infrastructure (mysql, elasticsearch, redis, etc) stack,
 follow the install steps described at 
 
-https://docs.phraseanet.com/4.1/en/Admin/Install.html
+https://docs.phraseanet.com/4.2/en/Admin/Install.html
 
 
 We do not recommend using this method anymore.
@@ -143,7 +143,7 @@ eg :
 
 Refer to ```.env``` file and ```docker compose``` files or on documentation for stack compositing.
 
-https://docs.phraseanet.com/4.1/en/Admin/EnvironnementVariables.html
+https://docs.phraseanet.com/4.2/en/Admin/EnvironnementVariables.html
 
 
 ![Phraseanet architectur](doc/assets/Phraseanet_architecture_V.1.1.png)
