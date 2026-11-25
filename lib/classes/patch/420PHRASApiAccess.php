@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application;
 use Psr\Log\LoggerInterface;
 
 /**
- * 4.2.1 introduces enforcement of the "API access" right (User::granted_api):
+ * 4.2.0 introduces enforcement of the "API access" right (User::granted_api):
  * only users holding it (or admins) may reach the "Developers" area and create
  * API keys / applications.
  *
@@ -25,10 +25,10 @@ use Psr\Log\LoggerInterface;
  * The granted accounts are logged at the end of the patch so the operator can
  * review them after the upgrade.
  */
-class patch_421PHRASApiAccess implements patchInterface
+class patch_420PHRASApiAccess implements patchInterface
 {
     /** @var string */
-    private $release = '4.2.1';
+    private $release = '4.2.0';
 
     /** @var array */
     private $concern = [base::APPLICATION_BOX];
@@ -104,7 +104,7 @@ class patch_421PHRASApiAccess implements patchInterface
         )->fetchAllAssociative();
 
         $this->logger->info(sprintf(
-            '[patch 4.2.1 / API access] %d account(s) were granted API access — please review:',
+            '[patch 4.2.0 / API access] %d account(s) were granted API access — please review:',
             count($rows)
         ));
 
@@ -118,7 +118,7 @@ class patch_421PHRASApiAccess implements patchInterface
             }
 
             $this->logger->info(sprintf(
-                '[patch 4.2.1 / API access]   - id=%s login=%s email=%s (%s)',
+                '[patch 4.2.0 / API access]   - id=%s login=%s email=%s (%s)',
                 $row['id'],
                 $row['login'],
                 $row['email'],
