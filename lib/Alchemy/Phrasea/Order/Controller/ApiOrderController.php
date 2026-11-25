@@ -34,7 +34,7 @@ use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\ResourceInterface;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -133,7 +133,7 @@ class ApiOrderController extends BaseOrderController
 
         $resource = new Collection($collection, $this->getOrderTransformer());
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($builder, false));
+        $pager = new Pagerfanta(new QueryAdapter($builder, false));
         $pager->setCurrentPage($page);
         $pager->setMaxPerPage($perPage);
 
