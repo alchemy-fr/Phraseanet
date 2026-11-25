@@ -17,8 +17,19 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
     {
         $app = $this->loadApp();
         $app->register(new LocaleServiceProvider());
+        $app['root.path'] = __DIR__ . '/../../../../../..';
+        $app->register(new ConfigurationServiceProvider());
 
-        $this->assertEquals(Application::getAvailableLanguages(), $app['locales.available']);
+        // the configuration file is shared by the whole suite: do not rely on its current content
+        $bkp = $app['conf']->get('languages');
+
+        try {
+            $app['conf']->set(['languages', 'available'], array_keys(Application::getAvailableLanguages()));
+
+            $this->assertEquals(Application::getAvailableLanguages(), $app['locales.available']);
+        } finally {
+            $app['conf']->set('languages', $bkp);
+        }
     }
 
     public function testLocalesAvailableCustomized()
@@ -30,15 +41,17 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
 
         $bkp = $app['conf']->get('languages');
 
-        $app['conf']->set(['languages', 'available'], ['fr', 'zh', 'de']);
+        try {
+            $app['conf']->set(['languages', 'available'], ['fr', 'zh', 'de']);
 
-        $original = Application::getAvailableLanguages();
-        unset($original['en']);
-        unset($original['nl']);
+            $original = Application::getAvailableLanguages();
+            unset($original['en']);
+            unset($original['nl']);
 
-        $this->assertEquals($original, $app['locales.available']);
-
-        $app['conf']->set('languages', $bkp);
+            $this->assertEquals($original, $app['locales.available']);
+        } finally {
+            $app['conf']->set('languages', $bkp);
+        }
     }
 
     public function testLocalesCustomizedWithError()
@@ -50,17 +63,19 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
 
         $bkp = $app['conf']->get('languages');
 
-        $app['conf']->set(['languages', 'available'], ['en_US']);
+        try {
+            $app['conf']->set(['languages', 'available'], ['en_US']);
 
-        $app['monolog'] = $this->createMock('Psr\Log\LoggerInterface');
-        $app['monolog']->expects($this->once())
-            ->method('error');
+            $app['monolog'] = $this->createMock('Psr\Log\LoggerInterface');
+            $app['monolog']->expects($this->once())
+                ->method('error');
 
-        $original = Application::getAvailableLanguages();
+            $original = Application::getAvailableLanguages();
 
-        $this->assertEquals($original, $app['locales.available']);
-
-        $app['conf']->set('languages', $bkp);
+            $this->assertEquals($original, $app['locales.available']);
+        } finally {
+            $app['conf']->set('languages', $bkp);
+        }
     }
 
     public function testLocaleBeforeBoot()

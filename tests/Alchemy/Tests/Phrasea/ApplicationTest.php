@@ -94,11 +94,21 @@ class ApplicationTest extends \PhraseanetTestCase
 
     public function testCookieLocale()
     {
-        foreach (array_keys(Application::getAvailableLanguages()) as $locale) {
-            $client = $this->getClientWithCookie($this->getAppThatReturnLocale(), $locale);
-            $client->request('GET', '/');
+        // the configuration file is shared by the whole suite: enable every language explicitly
+        $conf = $this->getAppThatReturnLocale()['conf'];
+        $bkp = $conf->get('languages');
 
-            $this->assertEquals($locale, $client->getResponse()->getContent());
+        try {
+            $conf->set(['languages', 'available'], array_keys(Application::getAvailableLanguages()));
+
+            foreach (array_keys(Application::getAvailableLanguages()) as $locale) {
+                $client = $this->getClientWithCookie($this->getAppThatReturnLocale(), $locale);
+                $client->request('GET', '/');
+
+                $this->assertEquals($locale, $client->getResponse()->getContent());
+            }
+        } finally {
+            $conf->set('languages', $bkp);
         }
     }
 
