@@ -138,7 +138,7 @@ CMD ["/bin/bash", "bin/run-worker.sh"]
 # phraseanet-nginx
 #########################################################################
 
-FROM nginx:1.31.9-alpine AS phraseanet-nginx
+FROM nginx:1.30.7-alpine AS phraseanet-nginx
 RUN adduser --uid 1000 --disabled-password app
 RUN apk add --no-cache apache2-utils
 ADD ./docker/nginx/root /
