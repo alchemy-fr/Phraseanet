@@ -255,6 +255,18 @@
   width: 2.2em;
 }
 
+/* jQuery UI >= 1.12 renders the label of icon-only buttons as a bare text node (e.g. the
+   dialog "Close" button): hide it the way the 1.12 base theme does */
+
+.ui-button-icon-only {
+  text-indent: -9999px;
+  white-space: nowrap;
+}
+
+input.ui-button.ui-button-icon-only {
+  text-indent: 0;
+}
+
 /* button elements seem to need a little more width */
 
 button.ui-button-icon-only {
@@ -8003,6 +8015,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #idFrameC #baskets .bottom-scroller {
   top: auto;
+}
+
+#idFrameC #baskets .SSTT.ui-corner-top {
+  top: 0;
 }
 
 #idFrameC #baskets .SSTT.active.ui-corner-top {

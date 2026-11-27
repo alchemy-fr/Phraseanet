@@ -141,7 +141,7 @@
     "jquery": "^3.2.1",
     "jquery-lazyload": "^1.9.7",
     "jquery-treeview": "https://github.com/alchemy-fr/jquery-treeview.git",
-    "jquery-ui": "^1.10.4",
+    "jquery-ui": "^1.13.3",
     "jquery-ui-datepicker-with-i18n": "^1.10.4",
     "jquery.fancytree": "~2.7",
     "jquery.tree": "0.0.5",

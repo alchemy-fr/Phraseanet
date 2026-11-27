@@ -3449,6 +3449,11 @@ jquery-lazyload@^1.9.7:
   resolved "https://registry.yarnpkg.com/jquery-lazyload/-/jquery-lazyload-1.9.7.tgz#9982b388c533c0b611214b3c5aaa0b9fede071f7"
   integrity sha1-mYKziMUzwLYRIUs8WqoLn+3gcfc=
 
+jquery-migrate@~3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/jquery-migrate/-/jquery-migrate-3.5.2.tgz#c9631702e1a5c93c5e7a0bbba54b82883c4ac47d"
+  integrity sha512-GGvcVWK3aei2/98r7pA4UkOYvs4xVeCGvquNXADFUp9+Sr6VeOw0ktlQ9z4YlBbEFpsXBlRioAgpH/fLWinj4Q==
+
 "jquery-mousewheel@>= 3.1.13":
   version "3.1.13"
   resolved "https://registry.yarnpkg.com/jquery-mousewheel/-/jquery-mousewheel-3.1.13.tgz#06f0335f16e353a695e7206bf50503cb523a6ee5"
@@ -3468,15 +3473,19 @@ jquery-ui-datepicker-with-i18n@^1.10.4:
   resolved "https://registry.yarnpkg.com/jquery-ui-datepicker-with-i18n/-/jquery-ui-datepicker-with-i18n-1.10.4.tgz#862cb5b48e4c502a513adeed0864e9234759337e"
   integrity sha1-hiy1tI5MUCpROt7tCGTpI0dZM34=
 
-jquery-ui-dist@^1.12.1:
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/jquery-ui-dist/-/jquery-ui-dist-1.12.1.tgz#5c0815d3cc6f90ff5faaf5b268a6e23b4ca904fa"
-  integrity sha1-XAgV08xvkP9fqvWyaKbiO0ypBPo=
+jquery-ui-dist@~1.13.3:
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/jquery-ui-dist/-/jquery-ui-dist-1.13.3.tgz#13c186eb403e660c96b9b7edb7ae1466eaef9974"
+  integrity sha512-qeTR3SOSQ0jgxaNXSFU6+JtxdzNUSJKgp8LCzVrVKntM25+2YBJW1Ea8B2AwjmmSHfPLy2dSlZxJQN06OfVFhg==
+  dependencies:
+    jquery ">=1.8.0 <4.0.0"
 
-jquery-ui@^1.12.1:
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.12.1.tgz#bcb4045c8dd0539c134bc1488cdd3e768a7a9e51"
-  integrity sha1-vLQEXI3QU5wTS8FIjN0+dop6nlE=
+jquery-ui@~1.13.3:
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.13.3.tgz#d9f5292b2857fa1f2fdbbe8f2e66081664eb9bc5"
+  integrity sha512-D2YJfswSJRh/B8M/zCowDpNFfwsDmtfnMPwjJTyvl+CBqzpYwQ+gFYIbUUlzijy/Qvoy30H1YhoSui4MNYpRwA==
+  dependencies:
+    jquery ">=1.8.0 <4.0.0"
 
 jquery.cookie@^1.4.1:
   version "1.4.1"
@@ -3500,10 +3509,15 @@ jquery@>=1.6, jquery@>=1.9, jquery@>=1.9.0:
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
   integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
 
-jquery@~1.11.3:
-  version "1.11.3"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-1.11.3.tgz#dd8b74278b27102d29df63eae28308a8cfa1b583"
-  integrity sha1-3Yt0J4snEC0p32Pq4oMIqM+htYM=
+"jquery@>=1.8.0 <4.0.0":
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.8.0.tgz#3bf83324052cc9e7148718e9d6ea3cde1b2b9f5a"
+  integrity sha512-AOYt0viqPysMUTq45O8gF9DuOnBT3Il/8WtM/TT8z/2QeGsZ70ImwSJtNFxznn2R71v8yIgaEunOGo82OY/f0g==
+
+jquery@~3.7.1:
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.7.1.tgz#083ef98927c9a6a74d05a6af02806566d16274de"
+  integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
 
 js-base64@^2.1.8, js-base64@^2.1.9:
   version "2.5.1"

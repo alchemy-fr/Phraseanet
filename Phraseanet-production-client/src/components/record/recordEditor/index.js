@@ -67,7 +67,7 @@ const recordEditorService = services => {
         $toolsTabs.tabs({
             activate: function (event, ui) {
                 recordEditorEvents.emit('tabChange', {
-                    tab: ui.newPanel.selector
+                    tab: '#' + ui.newPanel.attr('id')
                 });
             }
         });

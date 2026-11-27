@@ -11,7 +11,7 @@ const basket = () => {
             let main_open = false;
             for (let i = 0; i !== data.changed.length; i++) {
                 var sstt = $('#SSTT_' + data.changed[i]);
-                if (sstt.size() === 0) {
+                if (sstt.length === 0) {
                     if (main_open === false) {
                         $('#baskets .bloc').animate({top: 30}, function () {
                             $('#baskets .alert_datas_changed:first').show();

@@ -72,14 +72,14 @@
 
             $('#fileupload-feed').bind('fileuploadsubmit', function (e, data) {
                 var jqXHR = $(this).fileupload('send', data)
-                    .success(function(response){
+                    .done(function(response){
                         if( ! response.success){
                           $("#pub_icon .thumb_wrapper").empty();
                           $('#upload-error').empty().append(response.message);
                           $("#pub_icon .thumb_wrapper").append(data.oldImage);
                         }
                     })
-                    .error(function(jqXHR, textStatus, errorThrown) {
+                    .fail(function(jqXHR, textStatus, errorThrown) {
                         alert('error');
                     });
 

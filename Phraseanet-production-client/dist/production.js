@@ -8134,7 +8134,7 @@ var order = function order(services) {
 
         (0, _jquery2.default)('#ORDERPREVIEW').tabs({
             activate: function activate(event, ui) {
-                if (ui.newPanel.selector === '#PROCESSED-ORDER') {
+                if ('#' + ui.newPanel.attr('id') === '#PROCESSED-ORDER') {
                     (0, _jquery2.default)('.pager-processed').show();
                     (0, _jquery2.default)('.pager-todo').hide();
                     tabSelection = FilterTodo.PROCESSED;
@@ -10399,11 +10399,11 @@ var workzone = function workzone(services) {
         (0, _jquery2.default)('#idFrameC .tabs').data('hash', null) // unknowk for now
         .tabs({
             create: function activate(event, ui) {
-                (0, _jquery2.default)(this).data('hash', ui.tab.context.hash);
+                (0, _jquery2.default)(this).data('hash', ui.tab.find('a').prop('hash'));
             },
             activate: function activate(event, ui) {
-                (0, _jquery2.default)(this).data('hash', ui.newTab.context.hash);
-                if (ui.newTab.context.hash === '#thesaurus_tab') {
+                (0, _jquery2.default)(this).data('hash', ui.newTab.find('a').prop('hash'));
+                if (ui.newTab.find('a').prop('hash') === '#thesaurus_tab') {
                     appEvents.emit('thesaurus.show');
                 }
                 workzoneOptions.open();
@@ -10436,7 +10436,7 @@ var workzone = function workzone(services) {
                 singleSelection = !!singleSelection || false;
 
                 if ((0, _jquery2.default)('#baskets .SSTT.active').length === 1) {
-                    return dropOnBask(event, (0, _jquery2.default)('#IMGT_' + dbId + '_' + recordId), (0, _jquery2.default)('#baskets .SSTT.active'), singleSelection);
+                    return dropOnBask(event, (0, _jquery2.default)('#IMGT_' + dbId + '_' + recordId), (0, _jquery2.default)('#baskets .SSTT.active'), singleSelection, dbId + '_' + recordId);
                 } else {
                     humane.info(localeService.t('noActiveBasket'));
                 }
@@ -11546,7 +11546,7 @@ var workzone = function workzone(services) {
         });
     }
 
-    function dropOnBask(event, from, destKey, singleSelection) {
+    function dropOnBask(event, from, destKey, singleSelection, recordKey) {
         checkActiveBloc(dragBloc);
 
         var action = '';
@@ -11585,7 +11585,7 @@ var workzone = function workzone(services) {
                 if (from.length === 1) {
                     lstbr = [(0, _jquery2.default)(from).attr('id').split('_').slice(1, 3).join('_')];
                 } else {
-                    lstbr = [(0, _jquery2.default)(from).selector.split('_').slice(1, 3).join('_')];
+                    lstbr = [recordKey];
                 }
             } else {
                 lstbr = searchSelection.asArray;
@@ -21696,7 +21696,7 @@ var notifyLayout = function notifyLayout(services) {
     };
 
     var markNotificationRead = function markNotificationRead(notification_id, $notification) {
-        commonModule.markNotificationRead(notification_id).success(function (data) {
+        commonModule.markNotificationRead(notification_id).done(function (data) {
             // xhttp ok : update notif
             $notification.removeClass('unread');
         });
@@ -22399,7 +22399,7 @@ var recordEditorService = function recordEditorService(services) {
         $toolsTabs.tabs({
             activate: function activate(event, ui) {
                 recordEditorEvents.emit('tabChange', {
-                    tab: ui.newPanel.selector
+                    tab: '#' + ui.newPanel.attr('id')
                 });
             }
         });
@@ -62598,11 +62598,11 @@ var deleteRecord = function deleteRecord(services) {
                 }
                 // pop & truncate
                 ajaxParms.data.lst = lst.splice(0, CHUNKSIZE).join(';');
-                _jquery2.default.ajax(ajaxParms).error(function (data) {
+                _jquery2.default.ajax(ajaxParms).fail(function (data) {
                     fCancel();
                     $dialog.close();
                     alert('invalid csrf token delete form');
-                }).success(function (data) {
+                }).done(function (data) {
                     // prod feedback only if result ok
                     _jquery2.default.each(data, function (i, n) {
                         var imgt = (0, _jquery2.default)('#IMGT_' + n),
@@ -62736,7 +62736,7 @@ var propertyRecord = function propertyRecord(services) {
                     return;
                 }
 
-                ui.jqXHR.success(function () {
+                ui.jqXHR.done(function () {
                     ui.tab.data('loaded', true);
                     ui.tab.find('span').html('');
                     typeTabContent($dialog, '#' + ui.tab.attr('aria-controls'));
@@ -63037,7 +63037,7 @@ var recordToolsModal = function recordToolsModal(services, datas) {
             form.find('.resultAction').empty();
             form.find('.load').empty().html(localeService.t('loading') + ' ...');
             (0, _jquery2.default)('#uploadHdsub').contents().find('.content').empty();
-            (0, _jquery2.default)('#uploadHdsub').load(function () {
+            (0, _jquery2.default)('#uploadHdsub').on('load', function () {
                 form.find('.load').empty();
                 var iframeContent = (0, _jquery2.default)('#uploadHdsub').contents().find('.content').html();
                 form.closest('div').find('.resultAction').empty().append(iframeContent);
@@ -63153,7 +63153,7 @@ var sharingManager = function sharingManager(services, datas) {
                     action: 'refresh',
                     options: [dialogParams, activeTab]
                 });
-            }).error(function (err) {
+            }).fail(function (err) {
                 alert('forbidden action');
             });
             return false;
@@ -68243,14 +68243,14 @@ var uploader = function uploader(services) {
         // Init jquery tabs
         (0, _jquery2.default)('.upload-tabs', uploaderInstance.getContainer()).tabs({
             beforeLoad: function beforeLoad(event, ui) {
-                ui.jqXHR.success(function (xhr, status, index, anchor) {
+                ui.jqXHR.done(function () {
                     var lazaretBox = (0, _jquery2.default)('#lazaretBox');
 
                     (0, _jquery2.default)('.userTips', lazaretBox).tooltip();
                 });
-                ui.jqXHR.error(function (xhr, status, index, anchor) {
+                ui.jqXHR.fail(function () {
                     // display error message if ajax failed
-                    (0, _jquery2.default)(anchor.hash).html(localeService.t('error'));
+                    ui.panel.html(localeService.t('error'));
                 });
 
                 ui.tab.find('span').html(' <img src="/assets/common/images/icons/loader404040.gif"/>');
@@ -68555,7 +68555,7 @@ var uploader = function uploader(services) {
                 data.context.find('.upload-record .canva-wrapper').prepend(data.image);
 
                 // launch ajax request
-                var jqXHR = $this.fileupload('send', data).success(function (response) {
+                var jqXHR = $this.fileupload('send', data).done(function (response) {
                     if (response.success) {
                         // case record
                         if (response.element === 'record') {
@@ -68580,7 +68580,7 @@ var uploader = function uploader(services) {
                         });
                         data.context.find('.upload-record p.error').append(html).show();
                     }
-                }).error(function (jqXHR, textStatus, errorThrown) {
+                }).fail(function (jqXHR, textStatus, errorThrown) {
                     // Request is aborted
                     if (errorThrown === 'abort') {
                         return false;
@@ -68775,7 +68775,7 @@ var basket = function basket() {
             var main_open = false;
             for (var i = 0; i !== data.changed.length; i++) {
                 var sstt = (0, _jquery2.default)('#SSTT_' + data.changed[i]);
-                if (sstt.size() === 0) {
+                if (sstt.length === 0) {
                     if (main_open === false) {
                         (0, _jquery2.default)('#baskets .bloc').animate({ top: 30 }, function () {
                             (0, _jquery2.default)('#baskets .alert_datas_changed:first').show();

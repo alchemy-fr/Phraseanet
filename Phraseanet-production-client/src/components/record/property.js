@@ -47,7 +47,7 @@ const propertyRecord = (services) => {
                     return;
                 }
 
-                ui.jqXHR.success(function () {
+                ui.jqXHR.done(function () {
                     ui.tab.data('loaded', true);
                     ui.tab.find('span').html('');
                     typeTabContent($dialog, '#' + ui.tab.attr('aria-controls'));
