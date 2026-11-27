@@ -91,11 +91,20 @@ else
   rm -f /usr/local/etc/php/conf.d/newrelic.ini 
 fi
 
-rm -rf bin/run-worker.sh
+# Generate the launcher in a container-local directory: when the application directory is
+# bind-mounted (docker-compose.override.yml), every worker container shares bin/, and workers
+# starting together would overwrite each other's launcher and end up consuming the wrong queue.
+WORKER_RUN_DIR=/tmp/phraseanet-worker
+WORKER_SCRIPT="${WORKER_RUN_DIR}/run-worker.sh"
+WORKERS_COUNT_FILE="${WORKER_RUN_DIR}/workers_count.txt"
+mkdir -p "${WORKER_RUN_DIR}"
+chown root:app "${WORKER_RUN_DIR}"
+chmod 750 "${WORKER_RUN_DIR}"
+rm -f "${WORKER_SCRIPT}" "${WORKERS_COUNT_FILE}"
 
 if [ ! -z "$PHRASEANET_SCHEDULER" ] ; then
   command="bin/console task-manager:scheduler:run"
-  echo $command >> bin/run-worker.sh
+  echo $command >> "${WORKER_SCRIPT}"
   echo "Phraseanet workers container will be launched in Scheduler mode with bin/console task-manager:scheduler:run"
 else
   if [ ! -z "$PHRASEANET_EXPLODE_WORKER" ] && [ ${PHRASEANET_EXPLODE_WORKER} == "1" ]; then
@@ -112,13 +121,13 @@ else
         fi
       done
       command="/usr/bin/supervisord -n -c /etc/supervisor/supervisor.conf"
-      echo $command >> bin/run-worker.sh
+      echo $command >> "${WORKER_SCRIPT}"
       PHR_USER=root
     else
       echo "Multiples Phraseanet workers will be launched with bin/console worker:execute"
       NBR_WORKERS=0
 
-      echo "bin/console worker:heartbeat --heartbeat ${HEARTBEAT_INTERVAL} &" >> bin/run-worker.sh
+      echo "bin/console worker:heartbeat --heartbeat ${HEARTBEAT_INTERVAL} &" >> "${WORKER_SCRIPT}"
 
       for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`
       do
@@ -126,7 +135,7 @@ else
         m=$i
         if [ ${!m} -gt "0" ] ; then
           command="bin/console worker:execute --queue-name=$queue_name -m ${!m} &"
-          echo $command >> bin/run-worker.sh
+          echo $command >> "${WORKER_SCRIPT}"
           echo "Worker " $queue_name " defined with parallelism " ${!m}
           NBR_WORKERS=$(expr $NBR_WORKERS + 1)
         else
@@ -141,12 +150,12 @@ else
     fi 
     
       echo $NBR_WORKERS " workers defined"
-      echo $NBR_WORKERS > bin/workers_count.txt
-      chown root:app bin/workers_count.txt
-      chmod 760 bin/workers_count.txt
-      echo "HEARTBEAT_INTERVAL=${HEARTBEAT_INTERVAL}" >> bin/run-worker.sh
+      echo $NBR_WORKERS > "${WORKERS_COUNT_FILE}"
+      chown root:app "${WORKERS_COUNT_FILE}"
+      chmod 760 "${WORKERS_COUNT_FILE}"
+      echo "HEARTBEAT_INTERVAL=${HEARTBEAT_INTERVAL}" >> "${WORKER_SCRIPT}"
       echo '
-NBR_WORKERS=$(< bin/workers_count.txt)
+NBR_WORKERS=$(< /tmp/phraseanet-worker/workers_count.txt)
 sleep 1 # let worker:heartbeat fail before process check
 
 function check() {
@@ -171,11 +180,11 @@ check
 while true; do
   sleep ${HEARTBEAT_INTERVAL}s
   check
-done' >> bin/run-worker.sh
+done' >> "${WORKER_SCRIPT}"
     fi
   else
     command="bin/console worker:execute"
-    echo $command >> bin/run-worker.sh
+    echo $command >> "${WORKER_SCRIPT}"
   fi
 fi
 
@@ -186,4 +195,13 @@ else
   tail -F "${APP_DIR}/logs/worker_service.log" &
 fi
 
-runuser -u $PHR_USER -- $@
+# The image CMD still references bin/run-worker.sh: run the container-local launcher instead.
+args=()
+for arg in "$@"; do
+  if [ "$arg" == "bin/run-worker.sh" ] || [ "$arg" == "${APP_DIR}/bin/run-worker.sh" ]; then
+    arg="${WORKER_SCRIPT}"
+  fi
+  args+=("$arg")
+done
+
+runuser -u $PHR_USER -- "${args[@]}"
