@@ -234,7 +234,7 @@ var commonModule = (function ($, p4) {
             var main_open = false;
             for (var i = 0; i != data.unread_basket_ids.length; i++) {
                 var sstt = $('#SSTT_' + data.unread_basket_ids[i]);
-                if (sstt.size() === 0) {
+                if (sstt.length === 0) {
                     if (main_open === false) {
                         $('#baskets .bloc').animate({'top': 30}, function () {
                             $('#baskets .alert_datas_changed:first').show()
