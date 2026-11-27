@@ -107,6 +107,11 @@
             top: auto;
         }
         .SSTT {
+            // jQuery UI >= 1.12 adds ui-corner-top to every accordion header, collapsed ones included:
+            // cancel the global ".PNB .ui-corner-top { top: 100px }" offset for all of them
+            &.ui-corner-top {
+                top: 0;
+            }
             &.active {
                 &.ui-corner-top {
                     border: none;

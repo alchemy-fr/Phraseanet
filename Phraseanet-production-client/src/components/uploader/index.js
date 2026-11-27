@@ -101,14 +101,14 @@ const uploader = (services) => {
         // Init jquery tabs
         $('.upload-tabs', uploaderInstance.getContainer()).tabs({
             beforeLoad: function (event, ui) {
-                ui.jqXHR.success(function (xhr, status, index, anchor) {
+                ui.jqXHR.done(function () {
                     var lazaretBox = $('#lazaretBox');
 
                     $('.userTips', lazaretBox).tooltip();
                 });
-                ui.jqXHR.error(function (xhr, status, index, anchor) {
+                ui.jqXHR.fail(function () {
                     // display error message if ajax failed
-                    $(anchor.hash).html(localeService.t('error'));
+                    ui.panel.html(localeService.t('error'));
                 });
 
                 ui.tab.find('span').html(' <img src="/assets/common/images/icons/loader404040.gif"/>');
@@ -427,7 +427,7 @@ const uploader = (services) => {
 
                 // launch ajax request
                 var jqXHR = $this.fileupload('send', data)
-                    .success(function (response) {
+                    .done(function (response) {
                         if (response.success) {
                             // case record
                             if (response.element === 'record') {
@@ -453,7 +453,7 @@ const uploader = (services) => {
                             data.context.find('.upload-record p.error').append(html).show();
                         }
                     })
-                    .error(function (jqXHR, textStatus, errorThrown) {
+                    .fail(function (jqXHR, textStatus, errorThrown) {
                         // Request is aborted
                         if (errorThrown === 'abort') {
                             return false;

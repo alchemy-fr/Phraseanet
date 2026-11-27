@@ -1,5 +1,5 @@
 import $ from 'jquery';
-require('jquery-ui');
+require('jquery-ui/dist/jquery-ui');
 const humane = require('humane-js');
 import utils from './../../phraseanet-common/components/utils';
 import download from './download';

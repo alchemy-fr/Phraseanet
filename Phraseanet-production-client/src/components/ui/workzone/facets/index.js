@@ -2,7 +2,7 @@ require('./facets.scss');
 
 import $ from 'jquery';
 
-require('jquery-ui');
+require('jquery-ui/dist/jquery-ui');
 require('jquery.fancytree/src/jquery.fancytree');
 import * as _ from 'underscore';
 

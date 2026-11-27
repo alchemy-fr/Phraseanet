@@ -5,7 +5,8 @@ var utils = require('../../utils.js');
 gulp.task('build-jquery', function(){
     return utils.buildJsGroup([
         config.paths.nodes + 'jquery/dist/jquery.js',
-        config.paths.nodes + 'jquery-migrate/dist/jquery-migrate.js',
-        config.paths.src + 'vendors/jquery-migrate/jquery-migrate-mute.js'
+        // mute must be set before jquery-migrate loads to also silence its load-time warnings
+        config.paths.src + 'vendors/jquery-migrate/jquery-migrate-mute.js',
+        config.paths.nodes + 'jquery-migrate/dist/jquery-migrate.js'
     ], 'jquery', 'vendors/jquery');
 });

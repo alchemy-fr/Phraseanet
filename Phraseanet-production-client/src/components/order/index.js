@@ -170,7 +170,7 @@ const order = services => {
 
         $('#ORDERPREVIEW').tabs({
             activate: function (event, ui) {
-                if (ui.newPanel.selector === '#PROCESSED-ORDER') {
+                if ('#' + ui.newPanel.attr('id') === '#PROCESSED-ORDER') {
                     $('.pager-processed').show();
                     $('.pager-todo').hide();
                     tabSelection = FilterTodo.PROCESSED;

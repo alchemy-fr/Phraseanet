@@ -228,7 +228,7 @@ const notifyLayout = (services) => {
 
     const markNotificationRead = (notification_id, $notification) => {
         commonModule.markNotificationRead(notification_id)
-            .success(function (data) {
+            .done(function (data) {
                 // xhttp ok : update notif
                 $notification.removeClass('unread');
             })

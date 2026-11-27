@@ -8020,6 +8020,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
   top: auto;
 }
 
+#idFrameC #baskets .SSTT.ui-corner-top {
+  top: 0;
+}
+
 #idFrameC #baskets .SSTT.active.ui-corner-top {
   border: none;
   top: 0;

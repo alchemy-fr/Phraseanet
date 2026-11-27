@@ -449,11 +449,11 @@ const workzone = (services) => {
             .data('hash', null)  // unknowk for now
             .tabs({
                 create:   function activate(event, ui) {
-                    $(this).data('hash', ui.tab.context.hash);
+                    $(this).data('hash', ui.tab.find('a').prop('hash'));
                 },
                 activate: function activate(event, ui) {
-                    $(this).data('hash', ui.newTab.context.hash)
-                    if (ui.newTab.context.hash === '#thesaurus_tab') {
+                    $(this).data('hash', ui.newTab.find('a').prop('hash'));
+                    if (ui.newTab.find('a').prop('hash') === '#thesaurus_tab') {
                         appEvents.emit('thesaurus.show');
                     }
                     workzoneOptions.open();
@@ -482,7 +482,7 @@ const workzone = (services) => {
                 singleSelection = !!singleSelection || false;
 
                 if ($('#baskets .SSTT.active').length === 1) {
-                    return dropOnBask(event, $('#IMGT_' + dbId + '_' + recordId), $('#baskets .SSTT.active'), singleSelection);
+                    return dropOnBask(event, $('#IMGT_' + dbId + '_' + recordId), $('#baskets .SSTT.active'), singleSelection, dbId + '_' + recordId);
                 } else {
                     humane.info(localeService.t('noActiveBasket'));
                 }
@@ -1622,7 +1622,7 @@ const workzone = (services) => {
         });
     }
 
-    function dropOnBask(event, from, destKey, singleSelection) {
+    function dropOnBask(event, from, destKey, singleSelection, recordKey) {
         checkActiveBloc(dragBloc);
 
         let action = '';
@@ -1661,7 +1661,7 @@ const workzone = (services) => {
                 if (from.length === 1) {
                     lstbr = [$(from).attr('id').split('_').slice(1, 3).join('_')];
                 } else {
-                    lstbr = [$(from).selector.split('_').slice(1, 3).join('_')];
+                    lstbr = [recordKey];
                 }
             } else {
                 lstbr = searchSelection.asArray;

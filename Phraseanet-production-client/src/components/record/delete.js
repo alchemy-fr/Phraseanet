@@ -120,12 +120,12 @@ const deleteRecord = (services) => {
             // pop & truncate
             ajaxParms.data.lst = lst.splice(0, CHUNKSIZE).join(';');
             $.ajax(ajaxParms)
-                .error(function (data) {
+                .fail(function (data) {
                     fCancel();
                     $dialog.close();
                     alert('invalid csrf token delete form');
                 })
-                .success(function (data) {     // prod feedback only if result ok
+                .done(function (data) {     // prod feedback only if result ok
                     $.each(data, function (i, n) {
                         let imgt = $('#IMGT_' + n),
                             chim = $('.CHIM_' + n),

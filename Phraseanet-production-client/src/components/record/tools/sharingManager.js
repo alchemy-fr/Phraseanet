@@ -38,7 +38,7 @@ const sharingManager = (services, datas, activeTab = false) => {
                     action: 'refresh',
                     options: [dialogParams, activeTab]
                 });
-            }).error(function (err) {
+            }).fail(function (err) {
                 alert('forbidden action');
             });
             return false;

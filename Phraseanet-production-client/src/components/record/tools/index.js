@@ -58,7 +58,7 @@ const recordToolsModal = (services, datas, activeTab = false) => {
             form.find('.resultAction').empty();
             form.find('.load').empty().html(localeService.t('loading') + ' ...');
             $('#uploadHdsub').contents().find('.content').empty();
-            $('#uploadHdsub').load(function () {
+            $('#uploadHdsub').on('load', function () {
                 form.find('.load').empty();
                 var iframeContent = $('#uploadHdsub').contents().find('.content').html();
                 form.closest('div').find('.resultAction').empty().append(iframeContent);
