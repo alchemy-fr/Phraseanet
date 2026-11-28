@@ -150,53 +150,47 @@
         {% if substituables|length > 0 %}       {# substituables is empty if multiple records #}
             {% for record in records %}
                 <div id="substitution" class="tabBox">
+                    {% for substituable in substituables %}
+                        {% set d = (substituable == "document") ? true : false %}
+                        <div id="substitution-hd">
+                            <form
+                                    name="formchgHD"
+                                    action="{{ path(d ? 'prod_tools_hd_substitution' : 'prod_tools_thumbnail_substitution') }}"
+                                    enctype="multipart/form-data"
+                                    method="post"
+                                    target="uploadHdsub">
 
-                    {% if "unknown" == record.get_type() %}
-                        <i class="fa fa-exclamation-triangle icon-white"
-                           aria-hidden="true"></i>{{ "Substitution is not possible for this kind of record" | trans }}
-                    {% else %}
-                        {% for substituable in substituables %}
-                            {% set d = (substituable == "document") ? true : false %}
-                            <div id="substitution-hd">
-                                <form
-                                        name="formchgHD"
-                                        action="{{ path(d ? 'prod_tools_hd_substitution' : 'prod_tools_thumbnail_substitution') }}"
-                                        enctype="multipart/form-data"
-                                        method="post"
-                                        target="uploadHdsub">
-
-                                    <fieldset style='border:1px solid #999;padding:20px;'>
-                                        <legend>&nbsp;
-                                            <b>{% trans with {'%sd%' : substituable} %}substitution of %sd%{% endtrans %}</b>&nbsp
-                                        </legend>
-                                        <div>
-                                            {% if d %}
-                                                <input id='new-hd-file' name="newHD" type="file"/>
-                                                <br/>
-                                                <label for="CCFNALP" class="checkbox">
-                                                    <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
-                                                    {{ "mettre a jour le nom original de fichier apres substitution" | trans }}
-                                                </label>
-                                                <input type="hidden" name="prodToolsHDSubstitution_token" value="{{ app['session'].get('prodToolsHDSubstitution_token') }}">
-                                            {% else %}
-                                                <input id='new-sd-file' name="newThumb" type="file"/>
-                                                <input type="hidden" name="prodToolsThumbSubstitution_token" value="{{ app['session'].get('prodToolsThumbSubstitution_token') }}">
-                                            {% endif %}
-                                            <input type="hidden" name="subdef" value="{{ substituable|e }}"/>
-                                            <input type="hidden" name="sbas_id" value="{{ record.get_sbas_id() }}"/>
-                                            <input type="hidden" name="record_id" value="{{ record.get_record_id() }}"/>
-                                            <div class="load"></div>
-                                            <div class='resultAction'></div>
-                                        </div>
-                                    </fieldset>
-                                    <div style='text-align:right;padding-top:10px;'>
-                                        <button class="iframe_submiter btn btn-inverse">{{ "validate" | trans }}</button>
-                                        <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
+                                <fieldset style='border:1px solid #999;padding:20px;'>
+                                    <legend>&nbsp;
+                                        <b>{% trans with {'%sd%' : substituable} %}substitution of %sd%{% endtrans %}</b>&nbsp
+                                    </legend>
+                                    <div>
+                                        {% if d %}
+                                            <input id='new-hd-file' name="newHD" type="file"/>
+                                            <br/>
+                                            <label for="CCFNALP" class="checkbox">
+                                                <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
+                                                {{ "mettre a jour le nom original de fichier apres substitution" | trans }}
+                                            </label>
+                                            <input type="hidden" name="prodToolsHDSubstitution_token" value="{{ app['session'].get('prodToolsHDSubstitution_token') }}">
+                                        {% else %}
+                                            <input id='new-sd-file' name="newThumb" type="file"/>
+                                            <input type="hidden" name="prodToolsThumbSubstitution_token" value="{{ app['session'].get('prodToolsThumbSubstitution_token') }}">
+                                        {% endif %}
+                                        <input type="hidden" name="subdef" value="{{ substituable|e }}"/>
+                                        <input type="hidden" name="sbas_id" value="{{ record.get_sbas_id() }}"/>
+                                        <input type="hidden" name="record_id" value="{{ record.get_record_id() }}"/>
+                                        <div class="load"></div>
+                                        <div class='resultAction'></div>
                                     </div>
-                                </form>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+                                </fieldset>
+                                <div style='text-align:right;padding-top:10px;'>
+                                    <button class="iframe_submiter btn btn-inverse">{{ "validate" | trans }}</button>
+                                    <button class="action_cancel btn btn-inverse">{{ "cancel" | trans }}</button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endfor %}
                 </div>
             {% endfor %}
         {% endif %}
